@@ -1,0 +1,242 @@
+header {
+    position: relative;
+    h1 {
+        background: url('../images/bg_profile.jpg') no-repeat;
+        width: 100%;
+        height: 315px;
+        padding-top: 65px;
+        .mainPage {
+            position: relative;
+            width: 1200px;
+            margin: 0 auto;
+            height: 315px;
+            text-align: center;
+            img {
+                width: 110px;
+                height: 110px;
+                display: inline-block;
+                border: 4px solid #fff;
+                border-radius: 50%;
+            }
+            h3 {
+                color: #fff;
+                font-size: 25px;
+                margin-top: 20px;
+            }
+            &>ul {
+                display: flex;
+                justify-content: center;   
+                margin-top: 20px;
+                li {
+                    padding: 0 25px;
+                    color: #fff;
+                    span {
+                        display: block;
+                        font-size: 14px;
+                        line-height: 24px;
+                    }
+                    strong {
+                        font-size: 24px;
+                    }
+                }
+                li:first-child {
+                    border-right: solid 1px #24313d;
+                }
+            }
+            .bgMenu {
+                position: absolute;
+                bottom: 0px;
+                width: 100%;
+                &>ul {
+                    li {
+                        border: none;
+                        height: 50px;
+                        a {
+                            color: #fff;
+                            display: block;
+                            line-height: 56px;
+                            font-weight: 400;
+                        }
+                        
+                    }
+                    & li:first-child,& li:hover {
+                        a {
+                            color: #31c27c
+                        }
+                    }
+                }
+            }
+        }
+    }
+    h2 {
+        background: url('../images/bg_profile_unlogin.jpg') 50% no-repeat;
+        width: 100%;
+        height: 620px;
+        .login_btn {
+            width: 1200px;
+            position: relative;
+            margin: 0 auto;
+            top: 200px;
+           
+            p {
+                background: url('../images/profile_tit.png') no-repeat;
+                height: 64px;
+                width: 735px;
+                margin: 0 auto;
+                animation: move 1s ease-in-out;
+            }
+            span {
+                display: block;
+                background: url('../images/profile_tit.png') no-repeat;
+                height: 30px;
+                width: 345px;
+                background-position: 0 -70px; 
+                margin:30px auto 36px;
+                animation: move 1s ease-in-out;
+            }
+            a {
+                display: block;
+                border: 1px solid #31c27c;
+                background: #31c27c;
+                color: #fff;
+                height: 48px;
+                width: 128px;
+                font-size: 20px;
+                margin:30px auto 36px;
+                text-align: center;
+                line-height: 48px;
+                border-radius: 2px;
+                animation: move 1s ease-in-out;
+            }
+        }
+        
+    }
+}
+@keyframes move {
+    from {
+        transform: translate(0,60px);opacity: 0;
+    }
+    to {
+        transform: translate(0,0);opacity: 1;
+    }
+}   
+.songsTab {
+    position: absolute;
+    width: 100%;
+    text-align: left;
+}
+.songsBtn {
+    .el-button--primary {
+        background: #31c27c;
+        border: 1px solid #31c27c;
+        padding: 0 23px;
+        a {
+            display: block;
+            min-width: 120px;
+            line-height: 38px;
+            color: #fff;
+            font-size: 18px;
+            i{
+                margin-right: 8px;
+                font-size: 22px;
+                vertical-align: middle;
+            }
+        }
+    }
+    .el-button--primary:hover {
+        background-color: #ededed;
+        border: 1px solid #ededed;
+        a {
+            color: #333;
+            
+        }
+    }
+}
+.songList {
+    ul {
+       margin-top: 40px;
+    }
+    li {
+        float: none;
+        height: 50px;
+       position: relative;
+       padding-right: 100px;
+        a {
+            display: block;
+            line-height: 50px;
+            color: #333;
+             padding-left: 20px;
+             box-sizing: border-box;
+            span {
+                display: inline-block;
+                width: 56%;
+                  float: left;
+            }
+            label {
+                display: inline-block;
+                width: 22%;
+               
+            }
+            em {
+                display: inline-block;
+                width: 22%;
+                box-sizing: border-box;
+                padding-left: 20px;
+            }
+            i {
+                display: inline-block;
+                position: absolute;
+                width: 50px;
+                top: 0;
+                right: 38px;
+                color: #999;
+            }
+            &>em,&>label {
+                float: left;                
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 14px;
+                box-sizing: border-box;
+                padding-left: 20px;
+            }
+        }
+    };
+    & ul li:nth-child(odd){
+        background: #fbfbfb;
+        a {
+            color: #999;
+        }
+    }
+    & ul li:first-child a{
+        cursor: none;
+    }
+}
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+  border: none;
+}
+
+.el-tabs__item {
+  color: #fff;
+  font-size: 18px;
+}
+
+.el-tabs--card>.el-tabs__header .el-tabs__item,
+.el-tabs--card>.el-tabs__header {
+  border: none;
+}
+
+.el-tabs__item.is-active,
+.el-tabs__item:hover,
+.bgMenu .el-tabs .el-tabs__content .el-tabs__item:hover,
+.bgMenu .el-tabs .el-tabs__content .el-tabs__item.is-active {
+  color: #31c27c;
+}
+
+.bgMenu .el-tabs .el-tabs__content {
+  overflow: visible;
+}
+
+.bgMenu .el-tabs .el-tabs__content .el-tabs__item {
+  color: #333;
+}
