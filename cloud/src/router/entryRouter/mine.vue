@@ -220,19 +220,21 @@ export default {
 
 .el-tabs__item {
   color: #fff;
-  font-size: 18px;
+  font-size: 18px!important;
 }
 
 .el-tabs--card>.el-tabs__header .el-tabs__item,
 .el-tabs--card>.el-tabs__header {
   border: none;
 }
-
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  text-align: left!important;
+}
 .el-tabs__item.is-active,
 .el-tabs__item:hover,
 .bgMenu .el-tabs .el-tabs__content .el-tabs__item:hover,
 .bgMenu .el-tabs .el-tabs__content .el-tabs__item.is-active {
-  color: #31c27c;
+  color: #31c27c!important;
 }
 
 .bgMenu .el-tabs .el-tabs__content {
