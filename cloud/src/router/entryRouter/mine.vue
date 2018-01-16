@@ -55,11 +55,33 @@
 
                           </li>
                           <li v-for="(songs,index) in likeSongs" :key='index' :songId='songs.id'>
-                            <a href="javascript:void(0)">
-                              <span> {{songs.name}}</span>
-                              <label>{{ songs.ar | getSinger(songs.ar) }}</label>
+                            <a href="javascript:void(0)" class="clearfix">
+                              <span>
+                                <small>{{songs.name}}</small>
+                                <div class="hideMenu" >
+                                  <a href="javascript:void(0)">
+                                    <i class="_icon_play"></i>
+                                  </a>
+                                  <a href="javascript:void(0)">
+                                    <i class="_icon_add"></i>
+                                  </a>
+                                  <a href="javascript:void(0)">
+                                    <i class="_icon_down"></i>
+                                  </a>
+                                  <a href="javascript:void(0)">
+                                    <i class="_icon_share"></i>
+                                  </a>
+                                </div>
+                              </span>
+                              <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
+                              <label >
+                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id'>{{ singer }}<i v-show="index!=getSinger(songs.ar).length-1">/</i></span>
+                                  
+                              </label>
                               <em>{{ songs.al.name }}</em>
-                              <i>{{ songs.dt | formatDuring(songs.dt) }}</i>
+                              <i class="song_time">{{ songs.dt | formatDuring(songs.dt) }}</i>
+                              <div class="_other"></div>
+                              <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
                             </a>
                           </li>
                         </ul>
@@ -72,6 +94,7 @@
                   </el-tabs>
                 </el-tab-pane>
                 <el-tab-pane label="I create" name="second">
+<span>shangahi</span>
 
                 </el-tab-pane>
                 <el-tab-pane label="Watch" name="third">
@@ -104,29 +127,26 @@
 <script>
 import store from "../../store/store";
 import headerTop from "../../components/headerTop";
-import { mapMutations } from 'vuex'
-import { mapActions } from 'vuex'
+import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       user: {}, //登录信息
       userImg: "", //用户头像地址
-      mineMenu: 'first',//tab选项卡默认选项
-      songMenu: 'song',//喜欢的音乐选项卡
-      likeSongsnum: '',
+      mineMenu: "first", //tab选项卡默认选项
+      songMenu: "song", //喜欢的音乐选项卡
+      likeSongsnum: "",
       _songInfo: [],
       allSongs: [],
-      likeSongs: [],//我喜欢的音乐列表
+      likeSongs: [] //我喜欢的音乐列表
     };
   },
   methods: {
     // ...mapMutations([
     //    'getUserwatch',
     //  ]),
-    ...mapActions([
-      'getUserwatch'
-    ]),
-
+    ...mapActions(["getUserwatch"]),
 
     getUserinfo() {
       if (this.$store.state.isLogin) {
@@ -136,60 +156,94 @@ export default {
           .then(({ data: { code, profile } }) => {
             if (code == 200) {
               this.user = profile;
-
             }
           });
       }
     },
     getMusicInfo() {
       let that = this;
-      that.$http.get(BASE + '/user/playlist?uid=' + that.$store.state.user.userId).then(({ data: { playlist } }) => {
-        // state.user_playList = playlist;
-        that.allSongs = playlist;
-        return that.allSongs[0].id;
-      })
-        .then(function(id) {
-          that.$http.get(BASE + '/playlist/detail?id=' + id).then(({ data: { playlist } }) => {
-            that.likeSongs = playlist.tracks;
-            console.log(playlist)
-          })
+      that.$http
+        .get(BASE + "/user/playlist?uid=" + that.$store.state.user.userId)
+        .then(({ data: { playlist } }) => {
+          // state.user_playList = playlist;
+          that.allSongs = playlist;
+          return that.allSongs[0].id;
         })
+        .then(function(id) {
+          that.$http
+            .get(BASE + "/playlist/detail?id=" + id)
+            .then(({ data: { playlist } }) => {
+              that.likeSongs = playlist.tracks;
+              console.log(playlist);
+            });
+        });
+    },
+    delete_song(event, index) {
+      this.$confirm("确定要取消收藏该歌曲?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        beforeClose: (action, instance, done) => {
+          if (action === "confirm") {
+            setTimeout(() => {
+              done();
+              setTimeout(() => {
+                instance.confirmButtonLoading = false;
+              }, 300);
+            }, 500);
+          }else {
+            done();
+          }
+        }
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    getSinger: function(singer) {
+      var result = [];
+      singer.map((val, index, singer) => {
+        // if (index != singer.length - 1) {
+          // result += val.name + "/";
+          // result.push(val.name + "/");
+        // } else {
+           result.push(val.name);
+        // }
+      });
+      console.log(result)
+      return result;
     }
   },
   components: {
     headerTop
   },
-  created() {
-
-  },
+  created() {},
   filters: {
     formatDuring: function(mss) {
-      var result = '';
+      var result = "";
       var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
       var seconds = (mss % (1000 * 60)) / 1000;
-      if(minutes<10) {
-        minutes = '0'+ minutes;
+      if (minutes < 10) {
+        minutes = "0" + minutes;
       }
-      if(seconds<10){
-        seconds = '0'+ seconds.toFixed(0);
-        console.log(seconds)
-      }else {
-         seconds = seconds.toFixed(0);
+      if (seconds < 10) {
+        seconds = "0" + seconds.toFixed(0);
+      } else {
+        seconds = seconds.toFixed(0);
       }
-      result = minutes + ':' + seconds;
+      result = minutes + ":" + seconds;
       return result;
     },
-    getSinger:function( singer ){
-      var result = '';
-      singer.map( (val,index,singer) => {
-         if(index != singer.length-1){
-           result += val.name + '/';
-         }else {
-            result += val.name;
-         }
-      });
-      return result;
-    }
+    
   },
   computed: {
     // _songInfo(val) {
@@ -204,9 +258,6 @@ export default {
       this.getUserwatch();
       this.getMusicInfo();
     }
-
-
-
   }
 };
 </script>
@@ -214,27 +265,27 @@ export default {
 @import url("../../assets/less/mine.less");
 </style>
 <style>
-.el-tabs--card>.el-tabs__header .el-tabs__nav {
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
   border: none;
 }
 
 .el-tabs__item {
   color: #fff;
-  font-size: 18px!important;
+  font-size: 18px !important;
 }
 
-.el-tabs--card>.el-tabs__header .el-tabs__item,
-.el-tabs--card>.el-tabs__header {
+.el-tabs--card > .el-tabs__header .el-tabs__item,
+.el-tabs--card > .el-tabs__header {
   border: none;
 }
 .el-tabs--card > .el-tabs__header .el-tabs__nav {
-  text-align: left!important;
+  text-align: left !important;
 }
 .el-tabs__item.is-active,
 .el-tabs__item:hover,
 .bgMenu .el-tabs .el-tabs__content .el-tabs__item:hover,
 .bgMenu .el-tabs .el-tabs__content .el-tabs__item.is-active {
-  color: #31c27c!important;
+  color: #31c27c !important;
 }
 
 .bgMenu .el-tabs .el-tabs__content {

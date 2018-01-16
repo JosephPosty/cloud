@@ -3,6 +3,18 @@ html {
     background: #FFF;
 }
 
+html ::-webkit-scrollbar {
+    width: 8px;
+}
+
+html ::-webkit-scrollbar-thumb {
+    background-color: #666;
+}
+
+body {
+    overflow-y: scroll;
+}
+
 body,
 div,
 dl,
