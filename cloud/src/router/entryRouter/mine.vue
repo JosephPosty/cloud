@@ -57,31 +57,55 @@
                           <li v-for="(songs,index) in likeSongs" :key='index' :songId='songs.id'>
                             <a href="javascript:void(0)" class="clearfix">
                               <span>
-                                <small>{{songs.name}}</small>
+                                <el-tooltip placement="top-start" >
+                                  <small><a href="javascript:void(0)">{{songs.name}}</a></small>
+                                  <div slot="content">{{songs.name}}</div>
+                                </el-tooltip>
+                                <!-- <small></small> -->
                                 <div class="hideMenu" >
-                                  <a href="javascript:void(0)">
-                                    <i class="_icon_play"></i>
-                                  </a>
-                                  <a href="javascript:void(0)">
-                                    <i class="_icon_add"></i>
-                                  </a>
-                                  <a href="javascript:void(0)">
-                                    <i class="_icon_down"></i>
-                                  </a>
-                                  <a href="javascript:void(0)">
-                                    <i class="_icon_share"></i>
-                                  </a>
+                                  <el-tooltip placement="top-start" content="播放">
+                                      <a href="javascript:void(0)">
+                                        <i class="_icon_play"></i>
+                                      </a>
+                                  </el-tooltip>
+                                  <el-tooltip placement="top-start" content="添加">
+                                      <a href="javascript:void(0)">
+                                         <i class="_icon_add"></i>
+                                      </a>
+                                  </el-tooltip>
+                                  <el-tooltip placement="top-start" content="下载">
+                                      <a href="javascript:void(0)">
+                                         <i class="_icon_down"></i>
+                                      </a>
+                                  </el-tooltip>
+                                   <el-tooltip placement="top-start" content="分享">
+                                      <a href="javascript:void(0)">
+                                           <i class="_icon_share"></i>
+                                      </a>
+                                  </el-tooltip>
                                 </div>
                               </span>
                               <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
                               <label >
-                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id'>{{ singer }}<i v-show="index!=getSinger(songs.ar).length-1">/</i></span>
-                                  
+                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id' >
+                                    <el-tooltip placement="top-start" >
+                                      <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a>
+                                       <div slot="content">{{ singer }}</div>
+                                    </el-tooltip>
+                                    <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
+                                    </span>
                               </label>
-                              <em>{{ songs.al.name }}</em>
+                              <em>
+                                <el-tooltip placement="top-start" >
+                                  <a href="javascript:void(0)"> {{ songs.al.name }}</a>
+                                  <div slot="content"> {{ songs.al.name }}</div>
+                                </el-tooltip>
+                              </em>
                               <i class="song_time">{{ songs.dt | formatDuring(songs.dt) }}</i>
                               <div class="_other"></div>
-                              <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
+                              <el-tooltip placement="top-start" content="删除">
+                                <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
+                              </el-tooltip>
                             </a>
                           </li>
                         </ul>
@@ -89,6 +113,22 @@
                     </el-tab-pane>
                     <el-tab-pane label='歌单' name="songList">
                       <span slot="label" name="_songList" style='font-family:fantasy;'>歌单 {{$store.state.user_playList.length-1}}</span>
+                      <div class="songsList">
+                        <ul>
+                          <li v-for="(list) in allSongs.slice(1)" :key="list.id">
+                            <a href="javascript:void(0)">
+                              <img :src="list.coverImgUrl" alt="">
+                              <i></i>
+                              <em></em>
+                            </a>
+                             <el-tooltip placement="left-start">
+                              <p v-text="list.name"></p>
+                              <div slot="content"> {{ list.name }}</div>
+                            </el-tooltip>
+                           
+                          </li>
+                        </ul>
+                      </div>
                     </el-tab-pane>
 
                   </el-tabs>
@@ -138,7 +178,7 @@ export default {
       songMenu: "song", //喜欢的音乐选项卡
       likeSongsnum: "",
       _songInfo: [],
-      allSongs: [],
+      allSongs: [],//所有歌单
       likeSongs: [] //我喜欢的音乐列表
     };
   },
@@ -152,7 +192,7 @@ export default {
       if (this.$store.state.isLogin) {
         let userInfo = JSON.parse(window.localStorage.getItem("userInfo"));
         this.$http
-          .get(this.GLOBAL._url + "/user/detail?uid=" + userInfo.userId)
+          .get(BASE + "/user/detail?uid=" + userInfo.userId)
           .then(({ data: { code, profile } }) => {
             if (code == 200) {
               this.user = profile;
@@ -167,6 +207,7 @@ export default {
         .then(({ data: { playlist } }) => {
           // state.user_playList = playlist;
           that.allSongs = playlist;
+          console.log(that.allSongs.slice(1))
           return that.allSongs[0].id;
         })
         .then(function(id) {
@@ -174,7 +215,6 @@ export default {
             .get(BASE + "/playlist/detail?id=" + id)
             .then(({ data: { playlist } }) => {
               that.likeSongs = playlist.tracks;
-              console.log(playlist);
             });
         });
     },
@@ -191,7 +231,7 @@ export default {
                 instance.confirmButtonLoading = false;
               }, 300);
             }, 500);
-          }else {
+          } else {
             done();
           }
         }
@@ -211,15 +251,13 @@ export default {
     },
     getSinger: function(singer) {
       var result = [];
+      console.log(singer)
       singer.map((val, index, singer) => {
-        // if (index != singer.length - 1) {
-          // result += val.name + "/";
-          // result.push(val.name + "/");
-        // } else {
-           result.push(val.name);
-        // }
+        result.push({
+          id:val.id,
+          name:val.name
+        });
       });
-      console.log(result)
       return result;
     }
   },
@@ -242,8 +280,7 @@ export default {
       }
       result = minutes + ":" + seconds;
       return result;
-    },
-    
+    }
   },
   computed: {
     // _songInfo(val) {

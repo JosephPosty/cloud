@@ -256,37 +256,37 @@ export default {
   methods: {
     getDayList() {
       //每次推荐歌单
-      this.$http.get(this.GLOBAL._url + "/personalized").then(data => {
+      this.$http.get(BASE + "/personalized").then(data => {
         let result = data.data.result;
         this.dayList_1 = result.slice(0, 5);
         this.dayList_2 = result.slice(5, 10);
         this.dayList_3 = result.slice(10, 15);
       });
       //新歌推荐
-      this.$http.get(this.GLOBAL._url + "/personalized/newsong").then(data => {
+      this.$http.get(BASE + "/personalized/newsong").then(data => {
         this.new_songs = data.data.result.slice(0,9);
       });
-      this.$http.get(this.GLOBAL._url + "/top/list?idx=0").then(({data:{code,playlist,}}) => {
+      this.$http.get(BASE + "/top/list?idx=0").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_newSong = playlist.tracks.slice(0,10);
           }
       });
-      this.$http.get(this.GLOBAL._url + "/top/list?idx=1").then(({data:{code,playlist,}}) => {
+      this.$http.get(BASE + "/top/list?idx=1").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_hotSong = playlist.tracks.slice(0,10);
           }
       });
-        this.$http.get(this.GLOBAL._url + "/top/list?idx=5").then(({data:{code,playlist,}}) => {
+        this.$http.get(BASE._url + "/top/list?idx=5").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_UsaSong = playlist.tracks.slice(0,10);
           }
       });
-       this.$http.get(this.GLOBAL._url + "/top/list?idx=11").then(({data:{code,playlist,}}) => {
+       this.$http.get(BASE._url + "/top/list?idx=11").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_Korea = playlist.tracks.slice(0,10);
           }
       });
-      this.$http.get(this.GLOBAL._url + "/top/list?idx=8").then(({data:{code,playlist,}}) => {
+      this.$http.get(BASE._url + "/top/list?idx=8").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_iTunes = playlist.tracks.slice(0,10);
           }

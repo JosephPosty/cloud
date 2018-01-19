@@ -16,6 +16,7 @@ Vue.use(ElementUI)
 Vue.use(Vuex);
 Vue.config.productionTip = false
 
+// window.BASE = 'http://zdpzs9.natappfree.cc';
 window.BASE = 'http://127.0.0.1:3000';
 
 /* eslint-disable no-new */
