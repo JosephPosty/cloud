@@ -276,17 +276,17 @@ export default {
               this.rank_hotSong = playlist.tracks.slice(0,10);
           }
       });
-        this.$http.get(BASE._url + "/top/list?idx=5").then(({data:{code,playlist,}}) => {
+        this.$http.get(BASE + "/top/list?idx=5").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_UsaSong = playlist.tracks.slice(0,10);
           }
       });
-       this.$http.get(BASE._url + "/top/list?idx=11").then(({data:{code,playlist,}}) => {
+       this.$http.get(BASE + "/top/list?idx=11").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_Korea = playlist.tracks.slice(0,10);
           }
       });
-      this.$http.get(BASE._url + "/top/list?idx=8").then(({data:{code,playlist,}}) => {
+      this.$http.get(BASE + "/top/list?idx=8").then(({data:{code,playlist,}}) => {
           if(code == 200) {
               this.rank_iTunes = playlist.tracks.slice(0,10);
           }

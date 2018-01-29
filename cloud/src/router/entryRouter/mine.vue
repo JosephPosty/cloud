@@ -89,8 +89,9 @@
                               <label >
                                   <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id' >
                                     <el-tooltip placement="top-start" >
-                                      <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a>
-                                       <div slot="content">{{ singer }}</div>
+                                      <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
+                                      <!-- <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a> -->
+                                       <div slot="content">{{ singer.name }}</div>
                                     </el-tooltip>
                                     <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
                                     </span>
@@ -251,7 +252,6 @@ export default {
     },
     getSinger: function(singer) {
       var result = [];
-      console.log(singer)
       singer.map((val, index, singer) => {
         result.push({
           id:val.id,

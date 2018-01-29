@@ -70,12 +70,11 @@
 
 <script>
 import store from "../store/store";
-import {mapState} from 'vuex';
-import { mapActions } from 'vuex'
+import { mapState } from "vuex";
+import { mapActions } from "vuex";
 export default {
   name: "headerTop",
   data() {
-
     return {
       form: {
         phoneNum: "",
@@ -96,64 +95,81 @@ export default {
       // dialogTableVisible: false,
       // dialogFormVisible: false,
       formLabelWidth: "80px",
-      loginState: Boolean(JSON.parse(localStorage.getItem('userInfo'))) || false,//用户登录状态
-      userImghover:false,//用户头像下拉选项
-      loginUserinfo: {},//用户登录后的信息
+      loginState:
+        Boolean(JSON.parse(localStorage.getItem("userInfo"))) || false, //用户登录状态
+      userImghover: false, //用户头像下拉选项
+      loginUserinfo: {} //用户登录后的信息
     };
   },
   methods: {
-    ...mapActions([
-       'getUserwatch'
-     ]),
+    ...mapActions(["getUserwatch"]),
     toLogin() {
       //用户登录
       this.$refs.user_login.validate(valid => {
         if (valid) {
           let that = this;
-          that.$http.get(that.GLOBAL._url + '/login/cellphone?phone=' + that.form.phoneNum + '&password='+ that.form.password).then( data => {
-                //that.$store.commit('userSignin') //登录之后处理放在store
+          that.$http
+            .get(
+              BASE +
+                "/login/cellphone?phone=" +
+                that.form.phoneNum +
+                "&password=" +
+                that.form.password
+            )
+            .then(data => {
+              //that.$store.commit('userSignin') //登录之后处理放在store
+              if (data.data.code == 501) {
+                that.$message.error('账号密码不存在');
+              } else {
                 that.$store.state.loginShow = false;
                 that.loginState = true;
                 that.loginUserinfo = data.data.profile;
                 that.$store.state.isLogin = true;
-                window.localStorage.setItem('userInfo',JSON.stringify(that.loginUserinfo));
+                window.localStorage.setItem(
+                  "userInfo",
+                  JSON.stringify(that.loginUserinfo)
+                );
                 that.$store.state.user = that.loginUserinfo;
-               setTimeout( () => { that.getUserwatch()},0)
-          }).catch( error => {
-            console.log(error)
-          })
+                setTimeout(() => {
+                  that.getUserwatch();
+                }, 0);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
         }
       });
     },
-    Imghover (){
+    Imghover() {
       this.userImghover = !this.userImghover;
     },
-    ImgLeave (){
+    ImgLeave() {
       this.userImghover = false;
     },
     logout() {
-       this.loginState = false;
-       this.$store.state.isLogin = false;
-       localStorage.clear('userInfo');
+      this.loginState = false;
+      this.$store.state.isLogin = false;
+      localStorage.clear("userInfo");
     },
     getLogininfo() {
-      if(JSON.parse(localStorage.getItem('userInfo'))) {
-        this.loginUserinfo = JSON.parse(localStorage.getItem('userInfo'));
+      if (JSON.parse(localStorage.getItem("userInfo"))) {
+        this.loginUserinfo = JSON.parse(localStorage.getItem("userInfo"));
         this.loginState = true;
         this.$store.state.isLogin = true;
       }
     }
   },
-  computed:mapState({
-    dialogTableVisible: state => state.loginShow,
+  computed: mapState({
+    dialogTableVisible: state => state.loginShow
   }),
-  created () {
-    document.addEventListener('click', (e) => {
-				this.userImghover = false;	
-			});
+  created() {
+    document.addEventListener("click", e => {
+      this.userImghover = false;
+    });
   },
-  mounted () {
-    this.getLogininfo(); 
+  mounted() {
+    this.getLogininfo();
   }
 };
 </script>

@@ -15,7 +15,7 @@ export default new Router({
             iconCls: 'el-icon-setting',
         },
         {
-            path: '/singer/:id',
+            path: '/singer/:singerId',
             name: 'singer',
             component: singer,
         },
