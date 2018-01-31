@@ -3,10 +3,12 @@
     <!-- <keep-alive> -->
      <router-view/>
     <!-- </keep-alive> -->
+    <play-bar></play-bar>
   </div>
 </template>
 
 <script>
+import playBar from './components/player';
 export default {
   name: 'app',
   data () {
@@ -23,6 +25,9 @@ export default {
       } catch (e) {
 
       }
+    },
+    components: {
+      playBar,
     }
 }
 

@@ -15,6 +15,10 @@ export default new Vuex.Store({
         }, //用户关注和被关注信息
         user_playList: [], //用户的歌单收藏等
         user: JSON.parse(window.localStorage.getItem('userInfo')), //用户登录后获取的信息
+        MUSICID: '', //音乐id
+        MUSICURL: '', //播放地址
+        MUSICINFO: {}, //获取的歌曲详情
+
 
     },
 
@@ -34,6 +38,22 @@ export default new Vuex.Store({
     actions: {
         getUserwatch({ commit }) { //获取用户详情
             commit('getUserwatch');
+        },
+        getMusic({ commit, state }, m_id) {
+            axios.get(BASE + '/song/detail?ids=' + m_id).then((info) => {
+
+                    state.MUSICINFO = info.data.songs[0];
+                    console.log(state.MUSICINFO)
+                })
+                .then(() => {
+                    axios.get(BASE + '/music/url?id=' + m_id).then((data) => {
+                        if (data.data.code == 200) {
+                            state.MUSICID = m_id;
+                            state.MUSICURL = data.data.data[0].url;
+                        }
+                    })
+                })
+
         }
     }
 });

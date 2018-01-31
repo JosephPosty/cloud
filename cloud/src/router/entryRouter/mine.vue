@@ -64,7 +64,7 @@
                                 <!-- <small></small> -->
                                 <div class="hideMenu" >
                                   <el-tooltip placement="top-start" content="播放">
-                                      <a href="javascript:void(0)">
+                                      <a href="javascript:void(0)" :songId='songs.id' @click='$store.dispatch("getMusic", songs.id)'>
                                         <i class="_icon_play"></i>
                                       </a>
                                   </el-tooltip>
@@ -102,7 +102,7 @@
                                   <div slot="content"> {{ songs.al.name }}</div>
                                 </el-tooltip>
                               </em>
-                              <i class="song_time">{{ songs.dt | formatDuring(songs.dt) }}</i>
+                              <i class="song_time">{{ GLOBAL.formatDuring(songs.dt) }}</i>
                               <div class="_other"></div>
                               <el-tooltip placement="top-start" content="删除">
                                 <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
@@ -134,7 +134,7 @@
 
                   </el-tabs>
                 </el-tab-pane>
-                <el-tab-pane label="I create" name="second">
+                <el-tab-pane label="create" name="second">
 <span>shangahi</span>
 
                 </el-tab-pane>
@@ -150,7 +150,7 @@
               </el-tabs>
             </div>
           </div>
-
+         <!-- <audio :src='$store.state.MUSICURL' controls autoplay="autoplay"></audio> -->
         </h1>
       </header>
       <header v-else>
@@ -170,6 +170,7 @@ import store from "../../store/store";
 import headerTop from "../../components/headerTop";
 import { mapMutations } from "vuex";
 import { mapActions } from "vuex";
+import playBar from '../../components/player';
 export default {
   data() {
     return {
@@ -180,14 +181,18 @@ export default {
       likeSongsnum: "",
       _songInfo: [],
       allSongs: [],//所有歌单
-      likeSongs: [] //我喜欢的音乐列表
+      likeSongs: [], //我喜欢的音乐列表
+      src:'',
     };
   },
   methods: {
     // ...mapMutations([
     //    'getUserwatch',
     //  ]),
-    ...mapActions(["getUserwatch"]),
+    ...mapActions([
+      "getUserwatch",
+      "getMusic",
+      ]),
 
     getUserinfo() {
       if (this.$store.state.isLogin) {
@@ -262,25 +267,11 @@ export default {
     }
   },
   components: {
-    headerTop
+    headerTop,
+    playBar
   },
   created() {},
   filters: {
-    formatDuring: function(mss) {
-      var result = "";
-      var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = (mss % (1000 * 60)) / 1000;
-      if (minutes < 10) {
-        minutes = "0" + minutes;
-      }
-      if (seconds < 10) {
-        seconds = "0" + seconds.toFixed(0);
-      } else {
-        seconds = seconds.toFixed(0);
-      }
-      result = minutes + ":" + seconds;
-      return result;
-    }
   },
   computed: {
     // _songInfo(val) {
@@ -294,7 +285,7 @@ export default {
       this.getUserinfo();
       this.getUserwatch();
       this.getMusicInfo();
-    }
+    };
   }
 };
 </script>
