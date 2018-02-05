@@ -33,26 +33,33 @@
                     margin-top:0;
                     margin-bottom: 3px;
                 }
-                a:first-child {
+                a.lastSong {
                     background-position: 0 -130px;
                 }
-                a:first-child:hover {
+                a.lastSong:hover {
                     background-position: -30px -130px;
                 }
-                a:nth-child(2) {
+                a.pause {
                     background-position:  0 -165px;
                     width: 36px;
                     height: 36px;
                     margin-top: 6px;
                     margin-bottom: 0;
                 }
-                a:nth-child(2):hover {
-                    background-position: -40px -165px;
+                a.playing {
+                    background-position:  0 -204px;
+                    width: 36px;
+                    height: 36px;
+                    margin-top: 6px;
+                    margin-bottom: 0;
                 }
-                a:nth-child(3) {
+                a.playing:hover {
+                    background-position: -40px -204px;
+                }
+                a.nextSong {
                     background-position: -80px -130px;
                 }
-                a:nth-child(3):hover {
+                a.nextSong:hover {
                     background-position: -110px -130px;
                 }
                 
@@ -156,6 +163,13 @@
                                 top: -7px;
                                 left: -3px;
                             }
+                        };
+                        .block {
+                            width: 490px;
+                            position: absolute;
+                            top:1px;
+                            height: 9px;
+                            
                         }
 
                     };
@@ -228,11 +242,20 @@
                         display: inline-block;
                         width: 59px;
                         height: 36px;
+                        position: relative;
                         a {
                             display: inline-block;
                             background-position: -42px -68px;
                             width: 60px;
                             height: 27px;
+                            
+                        }
+                        i {
+                            position: absolute;
+                            top: 7px;
+                            right: 16px;
+                            color: #666;
+                            font-size: 13px;
                         }
                         a:hover {
                             background-position: -42px -98px;

@@ -18,7 +18,9 @@ export default new Vuex.Store({
         MUSICID: '', //音乐id
         MUSICURL: '', //播放地址
         MUSICINFO: {}, //获取的歌曲详情
-
+        playing: false, //播放状态
+        CURPLAYLIST: [], //当前播放列表
+        list_id: [], //存放id
 
     },
 
@@ -34,6 +36,7 @@ export default new Vuex.Store({
             // })
 
         },
+
     },
     actions: {
         getUserwatch({ commit }) { //获取用户详情
@@ -41,19 +44,25 @@ export default new Vuex.Store({
         },
         getMusic({ commit, state }, m_id) {
             axios.get(BASE + '/song/detail?ids=' + m_id).then((info) => {
+                state.MUSICINFO = info.data.songs[0];
+                if (state.list_id.indexOf(state.MUSICINFO.id) < 0) {
+                    state.list_id.push(state.MUSICINFO.id);
+                    state.CURPLAYLIST.push(state.MUSICINFO)
+                }
+                console.log(state.CURPLAYLIST);
 
-                    state.MUSICINFO = info.data.songs[0];
-                    console.log(state.MUSICINFO)
-                })
-                .then(() => {
-                    axios.get(BASE + '/music/url?id=' + m_id).then((data) => {
-                        if (data.data.code == 200) {
-                            state.MUSICID = m_id;
-                            state.MUSICURL = data.data.data[0].url;
-                        }
-                    })
-                })
 
+            })
+
+            .then(() => {
+                axios.get(BASE + '/music/url?id=' + m_id).then((data) => {
+                    if (data.data.code == 200) {
+                        state.MUSICID = m_id;
+                        state.MUSICURL = data.data.data[0].url;
+                        state.playing = true;
+                    }
+                })
+            })
         }
     }
 });

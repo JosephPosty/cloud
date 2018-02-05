@@ -4,9 +4,12 @@
           <div class="playBar_bg"></div>
           <div class="playBar_btn">
               <div class="btns">
-                  <a href="javascript:void(0)"></a>
-                  <a href="javascript:void(0)"></a>
-                  <a href="javascript:void(0)"></a>
+                  <a href="javascript:void(0)" class='lastSong'></a>
+                  <!-- 暂停 -->
+                <a href="javascript:void(0)" @click='setStatus("pause")' class='pause' v-if='$store.state.playing'></a> 
+                <!-- 播放 -->
+                  <a href="javascript:void(0)"  @click='setStatus("playing")' v-if='!$store.state.playing' class='playing'></a>
+                  <a href="javascript:void(0)" class='nextSong'></a>
               </div>
               <div class="musicImg">
                 <a href="javascript:void(0)">
@@ -27,12 +30,12 @@
                           <div class="readyBar">
 
                           </div>
-                          <div class="curBar">
+                           
                               <!-- <span></span> -->
                               <div class="block">
-                                <el-slider v-model="value1"></el-slider>
+                                <el-slider @change="sliderBar_change()" v-model="value1" :show-tooltip="false" :max="maxLength"></el-slider>
                              </div>
-                          </div>
+                         
                       </div>
                       <div class="musicTime">
                           <span class="curTime">{{ GLOBAL.realFormatSecond(audio.currentTime)  }}</span>
@@ -48,7 +51,8 @@
                      <a href="javascript:void(0)" class="voice"></a>
                      <a href="javascript:void(0)" class="playType"></a>
                      <span>
-                        <a href="javascript:void(0)"></a> 
+                        <a href="javascript:void(0)"></a>
+                        <i>{{$store.state.CURPLAYLIST.length}}</i>
                      </span>
                  </div>
               </div>
@@ -71,24 +75,53 @@ export default {
       //_durationTime:'',//音乐总时长
       timeDuration: "",
       tiemNow: "",
-       value1:0,
+      value1: 0,
       audio: {
         // 该字段是音频是否处于播放状态的属性
         playing: false,
         // 音频当前播放时长
         currentTime: "0:00",
         // 音频最大播放时长
-        maxTime: "0:00",
-       
-      }
+        maxTime: "0:00"
+      },
+      maxLength: 0,
+    
     };
   },
   methods: {
     onTimeupdate(res) {
       this.audio.currentTime = res.target.currentTime;
+      this.value1 = parseInt(this.audio.currentTime);
+      if (this.audio.currentTime > 1) {
+        if (this.$refs.player.paused) {
+          this.$store.state.playing = false;
+        }
+      }
     },
     onLoadedmetadata(res) {
       this.audio.maxTime = parseInt(res.target.duration);
+      this.maxLength = res.target.duration;
+    },
+    sliderBar_change() {
+      this.audio.currentTime = this.value1;
+      this.$refs.player.currentTime = this.value1;
+      var timeRanges = this.$refs.player.buffered;
+      // 获取以缓存的时间
+      var timeBuffered = timeRanges.end(timeRanges.length - 1);
+      // 获取缓存进度，值为0到1
+      var bufferPercent = timeBuffered / this.$refs.player.duration;
+    },
+    setStatus(status) {  //设置播放/暂停
+        if(status == 'pause') {
+            this.$store.state.playing = false;
+            this.$refs.player.pause();
+        }else {
+            this.$store.state.playing = true;
+            this.$refs.player.play();
+        }
+    },
+    _lastSong(index) { //上一首
+      // this.$store.state.MUSICURL = this.$store.state.CURPLAYLIST[index].;
     }
   },
 
@@ -99,4 +132,22 @@ export default {
 <style lang='less' scoped>
 @import url("../assets/less/player.less");
 </style>    
+<style>
+.el-slider__runway {
+  height: 9px;
+  margin: 0;
+  background: none;
+}
+.el-slider__bar {
+  height: 9px;
+  background: rgb(147, 18, 18);
+}
+.el-slider__button {
+  border: none;
+}
+.el-slider__button-wrapper {
+  top: -14px;
+}
+</style>
+
 
