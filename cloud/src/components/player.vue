@@ -4,12 +4,12 @@
           <div class="playBar_bg"></div>
           <div class="playBar_btn">
               <div class="btns">
-                  <a href="javascript:void(0)" class='lastSong'></a>
+                  <a href="javascript:void(0)" class='lastSong' @click='_lastSong()'></a>
                   <!-- 暂停 -->
                 <a href="javascript:void(0)" @click='setStatus("pause")' class='pause' v-if='$store.state.playing'></a> 
                 <!-- 播放 -->
                   <a href="javascript:void(0)"  @click='setStatus("playing")' v-if='!$store.state.playing' class='playing'></a>
-                  <a href="javascript:void(0)" class='nextSong'></a>
+                  <a href="javascript:void(0)" class='nextSong' @click="_nextSong()"></a>
               </div>
               <div class="musicImg">
                 <a href="javascript:void(0)">
@@ -60,6 +60,9 @@
           </div>
           
       </div>
+      <!-- 播放器列表 -->
+
+      
      <audio :src='$store.state.MUSICURL' @timeupdate="onTimeupdate"   @loadedmetadata="onLoadedmetadata" controls autoplay="autoplay" style="display:none" ref='player' id='audio'></audio>
   </div>
 </template>
@@ -84,8 +87,7 @@ export default {
         // 音频最大播放时长
         maxTime: "0:00"
       },
-      maxLength: 0,
-    
+      maxLength: 0
     };
   },
   methods: {
@@ -95,6 +97,23 @@ export default {
       if (this.audio.currentTime > 1) {
         if (this.$refs.player.paused) {
           this.$store.state.playing = false;
+        }
+        if (this.audio.maxTime == this.value1) {
+          if (this.$store.state.list_id.length > 1) {
+            this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(this.$store.state.MUSICID);
+            if (this.$store.state.CURMUSICINDEX ==this.$store.state.list_id.length-1) {
+              console.log('last')
+              this.$store.state.CURMUSICINDEX = 0;
+              let lastId = this.$store.state.list_id[0];
+              this.$store.dispatch("getMusic", lastId);
+            } else {
+              console.log('next')
+              let lastId = this.$store.state.list_id[
+                this.$store.state.CURMUSICINDEX + 1
+              ];
+              this.$store.dispatch("getMusic", lastId);
+            }
+          }
         }
       }
     },
@@ -111,22 +130,58 @@ export default {
       // 获取缓存进度，值为0到1
       var bufferPercent = timeBuffered / this.$refs.player.duration;
     },
-    setStatus(status) {  //设置播放/暂停
-        if(status == 'pause') {
-            this.$store.state.playing = false;
-            this.$refs.player.pause();
-        }else {
-            this.$store.state.playing = true;
-            this.$refs.player.play();
-        }
+    setStatus(status) {
+      //设置播放/暂停
+      if (status == "pause") {
+        this.$store.state.playing = false;
+        this.$refs.player.pause();
+      } else {
+        this.$store.state.playing = true;
+        this.$refs.player.play();
+      }
     },
-    _lastSong(index) { //上一首
-      // this.$store.state.MUSICURL = this.$store.state.CURPLAYLIST[index].;
+    _lastSong() {
+      //上一首
+      this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(
+        this.$store.state.MUSICID
+      );
+      let lastId = this.$store.state.list_id[
+        this.$store.state.CURMUSICINDEX - 1
+      ];
+      if (this.$store.state.CURPLAYLIST.length) {
+        if (
+          this.$store.state.CURMUSICINDEX == 0 ||
+          this.$store.state.CURMUSICINDEX ==
+            this.$store.state.CURPLAYLIST.length
+        ) {
+          return;
+        } else {
+          this.$store.dispatch("getMusic", lastId);
+        }
+      }
+    },
+    _nextSong() {
+      //下一首
+      this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(
+        this.$store.state.MUSICID
+      );
+      let lastId = this.$store.state.list_id[
+        this.$store.state.CURMUSICINDEX + 1
+      ];
+      if (this.$store.state.CURPLAYLIST.length) {
+        if (
+          this.$store.state.CURMUSICINDEX ==
+          this.$store.state.CURPLAYLIST.length - 1
+        ) {
+          return;
+        } else {
+          this.$store.dispatch("getMusic", lastId);
+        }
+      }
     }
   },
 
-  mounted() {},
-  beforeDestroyed() {}
+  mounted() {}
 };
 </script>
 <style lang='less' scoped>
