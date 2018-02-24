@@ -28,7 +28,7 @@
                       <div class="songList">
                         <div class="songsBtn">
                           <el-button type="primary">
-                            <a href="javascript:void(0)">
+                            <a href="javascript:void(0)" @click="playAll()">
                               <i class="el-icon-caret-right"></i>播放</a>
                           </el-button>
                           <el-button type="primary">
@@ -113,15 +113,16 @@
                       </div>
                     </el-tab-pane>
                     <el-tab-pane label='歌单' name="songList">
-                      <span slot="label" name="_songList" style='font-family:fantasy;'>歌单 {{$store.state.user_playList.length-1}}</span>
+                      <span slot="label" name="_songList" style='font-family:fantasy;'>歌单 {{$store.state.user_playList.length}}</span>
                       <div class="songsList">
                         <ul>
                           <li v-for="(list) in allSongs.slice(1)" :key="list.id">
-                            <a href="javascript:void(0)">
-                              <img :src="list.coverImgUrl" alt="">
+                            <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
+<img :src="list.coverImgUrl" alt="">
                               <i></i>
                               <em></em>
-                            </a>
+
+                            </router-link>
                              <el-tooltip placement="left-start">
                               <p v-text="list.name"></p>
                               <div slot="content"> {{ list.name }}</div>
@@ -264,7 +265,22 @@ export default {
         });
       });
       return result;
-    }
+    },
+    playAll: function(){  //播放全部
+      let that = this;
+      that.$store.state.list_id = [];
+      that.likeSongs.map((val,index) => {
+       that.$store.state.list_id.push(val.id);
+    })
+     that.$store.state.CURPLAYLIST = this.likeSongs;
+     that.$store.dispatch("getMusic", that.$store.state.list_id[0])
+    },
+    // playMuiscList: function(index){  //歌单选择播放
+    //   console.log(this.allSongs[index+1]);
+    //   this.$http.get(BASE + '/playlist/detail?id='+ this.allSongs[index+1].id).then((data) => {
+    //     console.log(data.data.playlist.tracks)
+    //   })
+    // }
   },
   components: {
     headerTop,

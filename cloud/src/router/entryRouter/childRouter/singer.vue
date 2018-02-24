@@ -1,4 +1,5 @@
 <template>
+
 </template>
 <script>
 import playBar from '../../.././components/player.vue';

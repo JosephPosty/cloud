@@ -20,6 +20,7 @@ export default new Vuex.Store({
         MUSICINFO: {}, //获取的歌曲详情
         playing: false, //播放状态
         CURPLAYLIST: [], //当前播放列表
+        CURMUSICINDEX: -1, //当前歌曲索引值
         list_id: [], //存放id
 
     },

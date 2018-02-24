@@ -7,7 +7,7 @@
             <router-link to='/'>音乐馆</router-link>
           </li>
           <li>
-            <router-link to='mine'>我的音乐</router-link>
+            <router-link to='/mine'>我的音乐</router-link>
           </li>
           <li>
             <a href="javascript:void(0)">客户端</a>
@@ -50,7 +50,20 @@
           <button>开通付费包</button>
        </div>
       </div>
+      
     </header>
+    <div class="menu">
+                <ul class="clearfix">
+                    <li><router-link to='/'>首页</router-link></li>
+                    <li><router-link to='/'>歌手</router-link></li>
+                    <li><router-link to='/'>专辑</router-link></li>
+                    <li><router-link to='/'>排行榜</router-link></li>
+                    <li><router-link to='/'>分类歌单</router-link></li>
+                    <li><router-link to='/'>电台</router-link></li>
+                    <li><router-link to='/'>MV</router-link></li>
+                    <li><router-link to='/'>数字专辑</router-link></li>
+                </ul>
+            </div>
     <el-dialog title="手机号登录" :visible.sync="$store.state.loginShow" width='400px' >
       <el-form :model="form" :rules='loginRule' ref='user_login' >
         <el-form-item label="手机号码" :label-width="formLabelWidth" prop='phoneNum'>

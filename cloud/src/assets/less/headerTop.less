@@ -1,6 +1,25 @@
 .header {
     width: 100%;
     background: #fff;
+    .menu {
+        width: 1200px;
+        margin: 0 auto;
+        background: #fff;
+        ul {
+            margin-left: 180px;
+            line-height: 51px;
+            li {
+                margin-right: 47px;
+                font-size: 15px;
+            }
+            li:first-child a {
+                color: #31c27c;
+            }
+            li a:hover {
+                color: #31c27c;
+            }
+        }
+    }
     & header {
         width: 1200px;
         margin: 0 auto;
@@ -30,6 +49,7 @@
             };
             
         };
+        
         & #login {
            float: right;
            position: relative;

@@ -3,7 +3,7 @@
        <div class="top">
             <header-top></header-top>
             <!-- <login></login> -->
-            <div class="menu">
+            <!-- <div class="menu">
                 <ul class="clearfix">
                     <li><router-link to='/'>首页</router-link></li>
                     <li><router-link to='/'>歌手</router-link></li>
@@ -14,7 +14,7 @@
                     <li><router-link to='/'>MV</router-link></li>
                     <li><router-link to='/'>数字专辑</router-link></li>
                 </ul>
-            </div>
+            </div> -->
        </div>
        <div class="banner">
            <!-- 歌单推荐 -->

@@ -61,8 +61,8 @@
           
       </div>
       <!-- 播放器列表 -->
-
       
+
      <audio :src='$store.state.MUSICURL' @timeupdate="onTimeupdate"   @loadedmetadata="onLoadedmetadata" controls autoplay="autoplay" style="display:none" ref='player' id='audio'></audio>
   </div>
 </template>
@@ -100,14 +100,17 @@ export default {
         }
         if (this.audio.maxTime == this.value1) {
           if (this.$store.state.list_id.length > 1) {
-            this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(this.$store.state.MUSICID);
-            if (this.$store.state.CURMUSICINDEX ==this.$store.state.list_id.length-1) {
-              console.log('last')
+            this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(
+              this.$store.state.MUSICID
+            );
+            if (
+              this.$store.state.CURMUSICINDEX ==
+              this.$store.state.list_id.length - 1
+            ) {
               this.$store.state.CURMUSICINDEX = 0;
               let lastId = this.$store.state.list_id[0];
               this.$store.dispatch("getMusic", lastId);
             } else {
-              console.log('next')
               let lastId = this.$store.state.list_id[
                 this.$store.state.CURMUSICINDEX + 1
               ];
@@ -145,17 +148,24 @@ export default {
       this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(
         this.$store.state.MUSICID
       );
-      let lastId = this.$store.state.list_id[
-        this.$store.state.CURMUSICINDEX - 1
-      ];
+
       if (this.$store.state.CURPLAYLIST.length) {
         if (
+          //当前播放第一收点击上一首
           this.$store.state.CURMUSICINDEX == 0 ||
           this.$store.state.CURMUSICINDEX ==
             this.$store.state.CURPLAYLIST.length
         ) {
-          return;
+          let lastId = this.$store.state.list_id[
+            this.$store.state.list_id.length - 1
+          ];
+          this.$store.state.CURMUSICINDEX =
+            this.$store.state.CURPLAYLIST.length - 1;
+          this.$store.dispatch("getMusic", lastId);
         } else {
+          let lastId = this.$store.state.list_id[
+            this.$store.state.CURMUSICINDEX - 1
+          ];
           this.$store.dispatch("getMusic", lastId);
         }
       }
@@ -165,16 +175,22 @@ export default {
       this.$store.state.CURMUSICINDEX = this.$store.state.list_id.indexOf(
         this.$store.state.MUSICID
       );
-      let lastId = this.$store.state.list_id[
-        this.$store.state.CURMUSICINDEX + 1
-      ];
+
       if (this.$store.state.CURPLAYLIST.length) {
         if (
+          //当前播放最后一首点击下一首
           this.$store.state.CURMUSICINDEX ==
           this.$store.state.CURPLAYLIST.length - 1
         ) {
-          return;
+          let lastId = this.$store.state.list_id[
+            0
+          ];
+          this.$store.state.CURMUSICINDEX = 0;
+          this.$store.dispatch("getMusic", lastId);
         } else {
+          let lastId = this.$store.state.list_id[
+            this.$store.state.CURMUSICINDEX + 1
+          ];
           this.$store.dispatch("getMusic", lastId);
         }
       }
