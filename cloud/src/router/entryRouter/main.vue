@@ -3,18 +3,6 @@
        <div class="top">
             <header-top></header-top>
             <!-- <login></login> -->
-            <!-- <div class="menu">
-                <ul class="clearfix">
-                    <li><router-link to='/'>首页</router-link></li>
-                    <li><router-link to='/'>歌手</router-link></li>
-                    <li><router-link to='/'>专辑</router-link></li>
-                    <li><router-link to='/'>排行榜</router-link></li>
-                    <li><router-link to='/'>分类歌单</router-link></li>
-                    <li><router-link to='/'>电台</router-link></li>
-                    <li><router-link to='/'>MV</router-link></li>
-                    <li><router-link to='/'>数字专辑</router-link></li>
-                </ul>
-            </div> -->
        </div>
        <div class="banner">
            <!-- 歌单推荐 -->

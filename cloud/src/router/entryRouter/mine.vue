@@ -83,10 +83,10 @@
                                            <i class="_icon_share"></i>
                                       </a>
                                   </el-tooltip>
-                                </div>
+                                </div>  
                               </span>
                               <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
-                              <label >
+                              <label>
                                   <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id' >
                                     <el-tooltip placement="top-start" >
                                       <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
@@ -121,7 +121,6 @@
 <img :src="list.coverImgUrl" alt="">
                               <i></i>
                               <em></em>
-
                             </router-link>
                              <el-tooltip placement="left-start">
                               <p v-text="list.name"></p>
@@ -214,7 +213,6 @@ export default {
         .then(({ data: { playlist } }) => {
           // state.user_playList = playlist;
           that.allSongs = playlist;
-          console.log(that.allSongs.slice(1))
           return that.allSongs[0].id;
         })
         .then(function(id) {

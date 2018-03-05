@@ -143,8 +143,10 @@ export default {
                   JSON.stringify(that.loginUserinfo)
                 );
                 that.$store.state.user = that.loginUserinfo;
+               
                 setTimeout(() => {
                   that.getUserwatch();
+                   console.log(that.$store.state.user_playList)
                 }, 0);
               }
             })

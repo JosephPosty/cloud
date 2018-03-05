@@ -31,6 +31,7 @@ export default new Vuex.Store({
             axios.get(BASE + '/user/followeds?uid=' + state.user.userId).then(({ data: { followeds } }) => { state.userWatch.beFollow = followeds });
             axios.get(BASE + '/user/playlist?uid=' + state.user.userId).then(({ data: { playlist } }) => {
                 state.user_playList = playlist;
+
             });
             // axios.get(BASE + '/playlist/detail?id=' + state.user_playList.length).then(({ data: { playlist } }) => {
             //     console.log(playlist)
