@@ -52,7 +52,62 @@
         
       </header>
       <div class="listSongs">
-      <h1>歌曲列表 <span>{{listInfo.trackCount}}首歌</span></h1>
+      <h1><p>歌曲列表 <span>{{listInfo.trackCount}}首歌</span></p><i>播放 : <em>{{listInfo.playCount}}</em>次</i></h1>
+      <div class="details">
+                        <ul>
+                          <li>
+                            <a href="javascript:void(0)" class="clrarfix">
+                              <span>歌曲</span>
+                              <label>歌手</label>
+                              <em>专辑</em>
+                              <i>时长</i>
+                            </a>
+
+                          </li>
+                          <li v-for="(songs,index) in listInfo.tracks" :key='index' :songId='songs.id'>
+                            <a href="javascript:void(0)" class="clearfix">
+                              <span>
+                                  <small><a href="javascript:void(0)">{{songs.name}}</a></small>
+                                <!-- <small></small> -->
+                                <div class="hideMenu" >
+                                      <a href="javascript:void(0)" :songId='songs.id' @click='$store.dispatch("getMusic", songs.id)'>
+                                        <i class="_icon_play"></i>
+                                      </a>
+                                      <a href="javascript:void(0)" >
+                                         <i class="_icon_add"></i>
+                                      </a>
+                                      <a href="javascript:void(0)">
+                                         <i class="_icon_down"></i>
+                                      </a>
+                                      <a href="javascript:void(0)">
+                                           <i class="_icon_share"></i>
+                                      </a>
+                                </div>  
+                              </span>
+                              <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
+                              <label>
+                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id' >
+                                    
+                                      <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
+                                      <!-- <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a> -->
+                                      
+                                   
+                                    <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
+                                    </span>
+                              </label>
+                              <em>
+                                  <a href="javascript:void(0)"> {{ songs.al.name }}</a>
+                                 
+                                
+                              </em>
+                              <i class="song_time">{{ GLOBAL.formatDuring(songs.dt) }}</i>
+                              <div class="_other"></div>
+                                <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
+                              
+                            </a>
+                          </li>
+                        </ul>        
+      </div>
     </div>
       </div>
     </div>
@@ -75,15 +130,32 @@ export default {
       let that = this;
       
       that.$http.get(BASE + "/playlist/detail?id=" + id).then(data => {
-        console.log(data);
         that.listInfo = data.data.playlist;
-        console.log(that.listInfo);
+        console.log(that.listInfo.tracks);
       });
       that.$http.get(BASE + '/user/playlist?uid=' + that.$store.state.user.userId).then(({ data: { playlist } }) => {
                that.user_list = playlist;
-              console.log(that.user_list)
             });
      
+    },
+    getSinger: function(singer) {
+      var result = [];
+      singer.map((val, index, singer) => {
+        result.push({
+          id:val.id,
+          name:val.name
+        });
+      });
+      return result;
+    },
+    playAll: function (){
+      let that = this;
+      that.$store.state.list_id = [];
+      that.listInfo.tracks.map((val,index) => {
+       that.$store.state.list_id.push(val.id);
+    })
+     that.$store.state.CURPLAYLIST = that.listInfo.tracks;
+     that.$store.dispatch("getMusic", that.$store.state.list_id[0])
     }
   },
   components: {
@@ -95,7 +167,9 @@ export default {
   },
   mounted() {
     this.getListinfo(this.listId);
-      document.getElementById('ul_list').style.height = window.innerHeight-300+'px';
+     this.$nextTick(()=> {
+        document.getElementById('ul_list').style.height = window.innerHeight-300+'px';
+     })
            
   }
 };

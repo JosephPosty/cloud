@@ -1,6 +1,7 @@
 <template>
   <div id="container">
     <header-top></header-top>
+    
     <div class="mineCton">
       <header v-if="$store.state.isLogin">
         <h1>
@@ -58,7 +59,11 @@
                             <a href="javascript:void(0)" class="clearfix">
                               <span>
                                 <el-tooltip placement="top-start" >
-                                  <small><a href="javascript:void(0)">{{songs.name}}</a></small>
+                                  <small>
+                                  <router-link :to="{ name: 'songDetails', params: { songId: songs.id }}" >
+                                      {{ songs.name }}
+                                   </router-link>
+                                    </small>
                                   <div slot="content">{{songs.name}}</div>
                                 </el-tooltip>
                                 <!-- <small></small> -->
@@ -270,7 +275,7 @@ export default {
       that.likeSongs.map((val,index) => {
        that.$store.state.list_id.push(val.id);
     })
-     that.$store.state.CURPLAYLIST = this.likeSongs;
+     that.$store.state.CURPLAYLIST = that.likeSongs;
      that.$store.dispatch("getMusic", that.$store.state.list_id[0])
     },
     // playMuiscList: function(index){  //歌单选择播放
@@ -300,6 +305,9 @@ export default {
       this.getUserwatch();
       this.getMusicInfo();
     };
+    this.$http.get(BASE + '/playlist/tracks?op=del&pid=2139023459&tracks=347230').then((data)=>{
+      console.log(data)
+    })
   }
 };
 </script>

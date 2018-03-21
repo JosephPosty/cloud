@@ -4,6 +4,7 @@ import headerTop from '@/components/headerTop'
 import main from './entryRouter/main'
 import singer from './entryRouter/childRouter/singer'
 import musiclist from './entryRouter/childRouter/musiclist'
+import song from './entryRouter/childRouter/songDetails'
 import mine from './entryRouter/mine'
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
             path: '/musiclist/:listId',
             name: 'musiclist',
             component: musiclist,
+        },
+        {
+            path: '/songDetails/:songId',
+            name: 'songDetails',
+            component: song,
         },
         {
             path: '/mine',

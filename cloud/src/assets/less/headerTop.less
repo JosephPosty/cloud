@@ -139,6 +139,7 @@
                 padding-left: 10px;
                 float: left;
                 font-size: 14px;
+                color: #999;
             }
             button {
                 width: 38px;
@@ -158,4 +159,82 @@
     .el-dialog {
         width: 200px;
     }
+}
+#search {
+    position: absolute;
+    width: 222px;
+    top: 37px;
+    left: -1px;
+    border-top: none;
+    background: #fff;
+    z-index: 15;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 7px #555;
+    .result {
+        &>div {
+            border-bottom: 1px solid #ddd;
+            li {
+                float: none;
+                color: #999;
+                padding-left: 30px;
+                line-height: 36px;
+                a {
+                    display: block;
+                    cursor: pointer;
+                }
+                span {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    display: block;
+                    width: 100%;
+                    font-size: 14px;
+                    color: #333;
+                }
+            }
+            li:hover {
+                background: #31c27c;
+               span {
+                   color: #fff;
+               }
+            }
+        }
+        &>div:last-child {
+            border-bottom: none;
+        }
+        h1 {
+            line-height: 36px;
+            color: #999;
+            font-size: 14px;
+            padding-left: 5px;
+            i {
+                display: inline-block;
+                background: url('../images/icon_sprite.png') no-repeat;
+                background-position: -20px -220px;
+                width: 16px;
+                height: 16px;
+                margin-right: 5px;
+                vertical-align: middle;
+            }
+            span {
+                vertical-align: top;
+            }
+        }
+        .result_singer {
+            i {
+               background-position: -20px -240px;
+            }
+        };
+        .result_ablum {
+            i {
+                background-position: -40px 0;
+            }
+        };
+        .result_mv {
+            i  {
+                background-position: 0 -220px;
+            }
+        }
+    }
+    
 }

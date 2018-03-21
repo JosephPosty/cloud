@@ -21,8 +21,55 @@
         </ul>
       </div>
       <div class="topSearch">
-        <input type="text" placeholder="搜索关键字">
+        <input type="text" placeholder="搜索关键字" v-model="keyWord" @click.stop='searchFocus()'>
         <button></button>
+        <div id="search"  @click.stop v-show='showResult'>
+          <div class="result">
+             <div class="result_songs" v-show='SEARCHRESULT.songs'>
+               <h1><i></i><span>单曲</span></h1>
+               <ul>
+                 <li v-for="(song,index) in SEARCHRESULT.songs" :key="index" :id='song.id'>
+                   <a >
+                     <span>{{ song.name }}</span>
+                   </a>
+                 </li>
+               </ul>
+             </div>
+             <div class="result_singer" v-show='SEARCHRESULT.artists'>
+                <h1><i></i><span>歌手</span></h1>
+                <ul>
+                 <li v-for="(artist,index) in SEARCHRESULT.artists" :key="index" :id='artist.id'>
+                   <a >
+                     <span>{{ artist.name }}</span>
+                   </a>
+                 </li>
+                </ul>
+             </div>
+             <div class="result_ablum" v-show='SEARCHRESULT.albums'>
+                <h1><i></i><span>专辑</span></h1>
+                <ul>
+                 <li v-for="(albums,index) in SEARCHRESULT.albums" :key="index" :id='albums.id'>
+                   <a >
+                     <span>{{ albums.name }}</span>
+                   </a>
+                 </li>
+               </ul>
+             </div>
+             <div class="result_mv" v-show='SEARCHRESULT.mvs'>
+                <h1><i></i><span>MV</span></h1>
+                <ul>
+                 <li v-for="(mvs,index) in SEARCHRESULT.mvs" :key="index" :id='mvs.id'>
+                   <a >
+                     <span>{{ mvs.name }}</span>
+                   </a>
+                 </li>
+               </ul>
+             </div>
+             <!-- <div class="no_result" v-show='JSON.stringify(SEARCHRESULT) =="{}"'>
+               <p>暂无搜索结果</p>
+             </div> -->
+          </div>
+        </div>
       </div>
       <!-- 登录组件 1.未登录，2.本地缓存 -->
       <div id="login">
@@ -90,8 +137,8 @@ export default {
   data() {
     return {
       form: {
-        phoneNum: "",
-        password: ""
+        phoneNum: "18850343832",
+        password: "qq1403009724"
       },
       loginRule: {
         phoneNum: [
@@ -109,9 +156,12 @@ export default {
       // dialogFormVisible: false,
       formLabelWidth: "80px",
       loginState:
-        Boolean(JSON.parse(localStorage.getItem("userInfo"))) || false, //用户登录状态
+      Boolean(JSON.parse(localStorage.getItem("userInfo"))) || false, //用户登录状态
       userImghover: false, //用户头像下拉选项
-      loginUserinfo: {} //用户登录后的信息
+      loginUserinfo: {}, //用户登录后的信息
+      keyWord: '',//搜索关键词
+      SEARCHRESULT: {},
+      showResult: true,//搜索结果显示隐藏
     };
   },
   methods: {
@@ -133,7 +183,9 @@ export default {
               //that.$store.commit('userSignin') //登录之后处理放在store
               if (data.data.code == 501) {
                 that.$message.error('账号密码不存在');
-              } else {
+              } else if(data.data.code == 502) {
+                that.$message.error('密码错误');
+              }else {
                 that.$store.state.loginShow = false;
                 that.loginState = true;
                 that.loginUserinfo = data.data.profile;
@@ -147,7 +199,7 @@ export default {
                 setTimeout(() => {
                   that.getUserwatch();
                    console.log(that.$store.state.user_playList)
-                }, 0);
+                }, 1000);
               }
             })
             .catch(error => {
@@ -173,14 +225,31 @@ export default {
         this.loginState = true;
         this.$store.state.isLogin = true;
       }
+    },
+    searchFocus() {
+      this.showResult = true;
     }
   },
   computed: mapState({
     dialogTableVisible: state => state.loginShow
   }),
+  watch: {
+    keyWord: function(val,newVal) {
+      if(val) {
+          this.showResult = true;
+          this.$http.get(BASE + '/search/suggest?keywords='+val).then( ({data :{ result }}) => {
+          this.SEARCHRESULT = result;
+          console.log(this.SEARCHRESULT)
+      })
+     }else {
+       this.SEARCHRESULT = {};
+     }
+    }
+  },
   created() {
     document.addEventListener("click", e => {
       this.userImghover = false;
+      this.showResult = false;
     });
   },
   mounted() {

@@ -87,7 +87,10 @@
         }
         .musicList_right {
             float: left;
-            margin-left: 50px;
+            width: 950px;
+            header {
+                margin-left: 10px;
+            }
         }
         .listImg {
             float: left;
@@ -199,11 +202,196 @@
             
         };
         .listSongs {
-            padding: 0 10px 0 32px;
             margin-top: 50px;
+            margin-left: 10px;
             h1 {
                 font-size: 20px;
-            }
+                display: flex;
+                justify-content: space-between;
+                height: 33px;
+                align-items: center;
+                span {
+                    padding-left: 20px;
+                }
+                i,span {
+                    font-size: 12px;
+                    color: #666;
+                    em {
+                        color: #c20c0c;
+                    }
+                }
+            };
+            ul {
+                margin-top: 40px;
+                max-height: 600px;
+                overflow-y: auto;
+                margin-bottom: 50px;
+             }
+             ul::-webkit-scrollbar {/*滚动条整体样式*/
+                 width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+                 height: 5px;
+             }
+             ul::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+                 border-radius: 5px;
+                 -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+                 background: rgba(0,0,0,0.2);
+             }
+             ul::-webkit-scrollbar-track {/*滚动条里面轨道*/
+                 -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+                 border-radius: 0;
+                 background: rgba(0,0,0,0.1);
+             }
+             li {
+                 float: none;
+                 height: 50px;
+                position: relative;
+                 &>a {
+                     display: block;
+                     line-height: 50px;
+                     color: #333;
+                      padding-left: 20px;
+                      box-sizing: border-box;
+                     &>span {
+                         display: block;
+                         width: 30%;
+                         float: left;   
+                         position: relative; 
+                         small {
+                             display: inline-block;
+                             max-width: 65%;
+                             text-overflow: ellipsis;
+                             white-space: nowrap;
+                             overflow: hidden;
+                             float: left;
+                         }
+                         .hideMenu {
+                             position: absolute;
+                             height: 36px;
+                             margin-top: -18px;
+                             right: -10px;
+                             top: 50%;
+                             display: none;
+                             a {
+                                 
+                             height: 36px;
+                             line-height: 36px;
+                             }
+                         }
+                         a {
+                             display: inline-block;
+                             margin-right: 10px;
+                             vertical-align: top;
+                             padding: 0;
+                             i {
+                                 display: inline-block;
+                                 background:  url('../images/table.png') no-repeat;
+                                 width: 18px;
+                                 height: 16px;
+                                 position: inherit;
+                                 vertical-align: middle;
+                             }
+                             i._icon_play {background-position: 0 -103px;width: 17px;height: 17px;}
+                             i._icon_add {background-position: 0 -174px}
+                             i._icon_down {background-position: 0 -195px}
+                             i._icon_share {background-position: -81px -174px}
+                         }
+                     }
+                     label {
+                         display: inline-block;
+                         width: 22%;
+                         i {
+                             padding: 0 2px;
+                             font-size: 16px;
+                             color: #333;
+                         }
+                         span>a:hover {
+                             color: #31c27c;
+                             
+                         }
+                     }
+                     em {
+                         display: inline-block;
+                         width: 22%;
+                         box-sizing: border-box;
+                         padding-left: 20px;
+                     }
+                     & >i {
+                         display: inline-block;
+                         position: absolute;
+                         width: 50px;
+                         top: 0;
+                         right: 38px;
+                         color: #999;
+                     }
+                     &>em,&>label {
+                         float: left;                
+                         overflow: hidden;
+                         text-overflow: ellipsis;
+                         white-space: nowrap;
+                         font-size: 14px;
+                         box-sizing: border-box;
+                         padding-left: 20px;
+                     }
+                     & >em {
+                         margin-right: 100px;
+                     }
+                     ._other {
+                         position: absolute;top: 0;
+                         right: 0;
+                         width: 38px;
+                         overflow: inherit;
+                         line-height: 50px;
+                     }
+                     a._icon_delete {
+                         position: absolute;
+                         display: none;
+                         width: 36px;
+                         height: 36px;
+                         background:url('../images/icon_list_menu.png') no-repeat;
+                         background-position: 0 -160px;
+                         right: 58px;
+                         margin-top: 7px;
+                         top: 0;
+                         padding: 0;
+                     }
+                 }
+                 & :hover span small{
+                     max-width: 50%;     
+                 }
+                 & :hover .hideMenu,{
+                     display: block;
+                 }
+                 & :hover a._icon_delete{
+                     display: block;
+                 }
+                 & :hover i.song_time{
+                     display: none;
+                 }
+             };
+             .hideMenu :hover i._icon_play{
+                 background-position: 0 -128px;
+             }
+             .hideMenu :hover i._icon_add{
+                 background-position: -20px -174px;
+                
+             }
+             .hideMenu :hover i._icon_down{
+                background-position: -20px -195px;
+             }
+             .hideMenu :hover i._icon_share{
+                background-position: -104px -174px;
+                 
+             }
+         
+             & ul li:nth-child(odd){
+                 background: #fbfbfb;
+                 a {
+                     color: #999;
+                 }
+             }
+             & ul li:first-child a{
+                 cursor: auto;
+             }
         }
     }
 }

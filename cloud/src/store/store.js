@@ -31,6 +31,7 @@ export default new Vuex.Store({
             axios.get(BASE + '/user/followeds?uid=' + state.user.userId).then(({ data: { followeds } }) => { state.userWatch.beFollow = followeds });
             axios.get(BASE + '/user/playlist?uid=' + state.user.userId).then(({ data: { playlist } }) => {
                 state.user_playList = playlist;
+                console.log(state.user_playList)
 
             });
             // axios.get(BASE + '/playlist/detail?id=' + state.user_playList.length).then(({ data: { playlist } }) => {
@@ -64,6 +65,11 @@ export default new Vuex.Store({
                         state.playing = true;
                     }
                 })
+            })
+        },
+        addSong({ commit, state }, [m_id, like]) {
+            axios.get(BASE + '/like?id=' + m_id + '&like=' + like).then(data => {
+                console.log(data)
             })
         }
     }

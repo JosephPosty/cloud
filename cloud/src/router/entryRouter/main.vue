@@ -13,13 +13,16 @@
                         <div class="songsList_day" >
                             <ul>
                                 <li v-for="list in dayList_1" :key="list.id" :id='list.id'>
-                                    <span>
-                                       <img :src="list.picUrl" alt="">
-                                        <i></i>
-                                        <em></em>
-                                    </span>
+                                     <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
+                                        <span>
+                                            <img :src="list.picUrl" alt="">
+                                            <i></i>
+                                            <em></em>
+                                        </span>
                                     <h2>{{ list.name }}</h2>
                                     <p>播放量 : {{ list.playCount }}</p>
+                                     </router-link>
+                                    
                                 </li>
                             </ul>
                         </div>  
@@ -28,6 +31,7 @@
                         <div class="songsList_day">
                             <ul>
                                 <li v-for="list in dayList_2" :key="list.id" :id='list.id'>
+                                    <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
                                    <span>
                                        <img :src="list.picUrl" alt="">
                                         <i></i>
@@ -35,6 +39,7 @@
                                     </span>
                                     <h2>{{ list.name }}</h2>
                                     <p>播放量 : {{ list.playCount }}</p>
+                                    </router-link>
                                 </li>
                             </ul>
                         </div>  
@@ -43,6 +48,7 @@
                         <div class="songsList_day">
                             <ul>
                                 <li  v-for="list in dayList_3" :key="list.id" :id="list.id">
+                                    <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
                                    <span>
                                        <img :src="list.picUrl" alt="">
                                         <i></i>
@@ -50,6 +56,7 @@
                                     </span>
                                     <h2>{{ list.name }}</h2>
                                     <p>播放量 : {{ list.playCount }}</p>
+                                    </router-link>
                                 </li>
                             </ul>
                         </div>  
@@ -63,7 +70,7 @@
                     <el-tabs type="card">
                         <el-tab-pane :label='index' v-for="index in ['内地','港台','欧美','其他']" :key='index'>
                             <ul>
-                                <li v-for="songs in new_songs" :key="songs.id">
+                                <li v-for="songs in new_songs" :key="songs.id" :id="songs.id" @click='$store.dispatch("getMusic", songs.id)'>
                                     <div class="songImg">
                                         <img :src="songs.song.album.picUrl" alt="">
                                         <span></span>
@@ -93,7 +100,7 @@
                            <h2>
                                <span>新歌</span>
                            </h2>
-                            <div class="listIcon">
+                            <div class="listIcon" @click='playAll(rank_newSong)'>
                                 <em class="icon_line"></em>
                                 <em class="icon_video"></em>
                             </div>
@@ -121,12 +128,12 @@
                            <h2>
                                <span>热歌</span>
                            </h2>
-                            <div class="listIcon">
+                            <div class="listIcon" @click='playAll(rank_hotSong)'>
                                 <em class="icon_line"></em>
                                 <em class="icon_video"></em>
                             </div>
                             <div class="songsList">
-                                <li v-for='(song,index) in rank_hotSong' :key="song.id" :id="song.id">
+                                <li v-for='(song,index) in rank_hotSong' :key="song.id" :id="song.id" >
                                     <h3>
                                         <i v-text='index+1+"."'></i>
                                         <span v-text="song.name"></span>
@@ -147,7 +154,7 @@
                            <h2>
                                <span>英国UK榜</span>
                            </h2>
-                            <div class="listIcon">
+                            <div class="listIcon"  @click='playAll(rank_UsaSong)'>
                                 <em class="icon_line"></em>
                                 <em class="icon_video"></em>
                             </div>
@@ -173,7 +180,7 @@
                            <h2>
                                <span>韩国</span>
                            </h2>
-                            <div class="listIcon">
+                            <div class="listIcon" @click='playAll(rank_Korea)'>
                                 <em class="icon_line"></em>
                                 <em class="icon_video"></em>
                             </div>
@@ -199,7 +206,7 @@
                            <h2>
                                <span>iTunes</span>
                            </h2>
-                            <div class="listIcon">
+                            <div class="listIcon" @click='playAll(rank_iTunes)'>
                                 <em class="icon_line"></em>
                                 <em class="icon_video"></em>
                             </div>
@@ -224,6 +231,10 @@
 </template>
 <script>
 import headerTop from "../../components/headerTop";
+
+import store from "../../store/store";
+import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -231,17 +242,21 @@ export default {
       dayList_2: [], //swiper2
       dayList_3: [], //swiper3
       new_songs: [], //新歌推荐
-      rank_newSong:[],//新歌排行榜
-      rank_hotSong:[],//热歌排行榜
-      rank_UsaSong:[],//UK排行榜
-      rank_Korea:[],//韩国排行榜
-      rank_iTunes:[],//Itunes榜单
+      rank_newSong: [], //新歌排行榜
+      rank_hotSong: [], //热歌排行榜
+      rank_UsaSong: [], //UK排行榜
+      rank_Korea: [], //韩国排行榜
+      rank_iTunes: [] //Itunes榜单
     };
   },
   components: {
-    headerTop
+    headerTop,
   },
   methods: {
+    ...mapActions([
+      "getUserwatch",
+      "getMusic",
+      ]),
     getDayList() {
       //每次推荐歌单
       this.$http.get(BASE + "/personalized").then(data => {
@@ -252,34 +267,53 @@ export default {
       });
       //新歌推荐
       this.$http.get(BASE + "/personalized/newsong").then(data => {
-        this.new_songs = data.data.result.slice(0,9);
+        this.new_songs = data.data.result.slice(0, 9);
       });
-      this.$http.get(BASE + "/top/list?idx=0").then(({data:{code,playlist,}}) => {
-          if(code == 200) {
-              this.rank_newSong = playlist.tracks.slice(0,10);
+      this.$http
+        .get(BASE + "/top/list?idx=0")
+        .then(({ data: { code, playlist } }) => {
+          if (code == 200) {
+            this.rank_newSong = playlist.tracks.slice(0, 10);
           }
-      });
-      this.$http.get(BASE + "/top/list?idx=1").then(({data:{code,playlist,}}) => {
-          if(code == 200) {
-              this.rank_hotSong = playlist.tracks.slice(0,10);
+        });
+      this.$http
+        .get(BASE + "/top/list?idx=1")
+        .then(({ data: { code, playlist } }) => {
+          if (code == 200) {
+            this.rank_hotSong = playlist.tracks.slice(0, 10);
           }
-      });
-        this.$http.get(BASE + "/top/list?idx=5").then(({data:{code,playlist,}}) => {
-          if(code == 200) {
-              this.rank_UsaSong = playlist.tracks.slice(0,10);
+        });
+      this.$http
+        .get(BASE + "/top/list?idx=5")
+        .then(({ data: { code, playlist } }) => {
+          if (code == 200) {
+            this.rank_UsaSong = playlist.tracks.slice(0, 10);
           }
-      });
-       this.$http.get(BASE + "/top/list?idx=11").then(({data:{code,playlist,}}) => {
-          if(code == 200) {
-              this.rank_Korea = playlist.tracks.slice(0,10);
+        });
+      this.$http
+        .get(BASE + "/top/list?idx=11")
+        .then(({ data: { code, playlist } }) => {
+          if (code == 200) {
+            this.rank_Korea = playlist.tracks.slice(0, 10);
           }
-      });
-      this.$http.get(BASE + "/top/list?idx=8").then(({data:{code,playlist,}}) => {
-          if(code == 200) {
-              this.rank_iTunes = playlist.tracks.slice(0,10);
+        });
+      this.$http
+        .get(BASE + "/top/list?idx=8")
+        .then(({ data: { code, playlist } }) => {
+          if (code == 200) {
+            this.rank_iTunes = playlist.tracks.slice(0, 10);
           }
-      });
-    }
+        });
+    },
+    playAll: function(songsArr){  //播放全部
+      let that = this;
+      that.$store.state.list_id = [];
+      songsArr.map((val,index) => {
+       that.$store.state.list_id.push(val.id);
+    })
+     that.$store.state.CURPLAYLIST = songsArr;
+     that.$store.dispatch("getMusic", that.$store.state.list_id[0])
+    },
   },
   mounted() {
     this.getDayList();
@@ -322,19 +356,20 @@ export default {
     height: 32px;
   }
 }
-.el-tabs--card>.el-tabs__header .el-tabs__nav{
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  border: none;
+  float: none;
+  text-align: center;
+  .el-tabs__item {
     border: none;
-    float: none;
-    text-align: center;
-    .el-tabs__item{
-        border: none;
-        font-size: 15px;
-    }
-    .el-tabs__item.is-active,.el-tabs__item:hover {
-        color:#31c27c;
-    }
+    font-size: 15px;
+  }
+  .el-tabs__item.is-active,
+  .el-tabs__item:hover {
+    color: #31c27c;
+  }
 }
-.el-tabs--card>.el-tabs__header {
-    border: none;
+.el-tabs--card > .el-tabs__header {
+  border: none;
 }
 </style>
