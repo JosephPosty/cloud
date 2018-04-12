@@ -12,7 +12,7 @@
                     <el-carousel-item>
                         <div class="songsList_day" >
                             <ul>
-                                <li v-for="list in dayList_1" :key="list.id" :id='list.id'>
+                                <li v-for="list in dayList_1"  :id='list.id'>
                                      <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
                                         <span>
                                             <img :src="list.picUrl" alt="">
@@ -30,7 +30,7 @@
                     <el-carousel-item>
                         <div class="songsList_day">
                             <ul>
-                                <li v-for="list in dayList_2" :key="list.id" :id='list.id'>
+                                <li v-for="list in dayList_2"  :id='list.id'>
                                     <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
                                    <span>
                                        <img :src="list.picUrl" alt="">
@@ -47,7 +47,7 @@
                     <el-carousel-item>
                         <div class="songsList_day">
                             <ul>
-                                <li  v-for="list in dayList_3" :key="list.id" :id="list.id">
+                                <li  v-for="list in dayList_3" :id="list.id">
                                     <router-link :to="{ name: 'musiclist', params: { listId: list.id }}" :listId='list.id'>
                                    <span>
                                        <img :src="list.picUrl" alt="">
@@ -70,7 +70,7 @@
                     <el-tabs type="card">
                         <el-tab-pane :label='index' v-for="index in ['内地','港台','欧美','其他']" :key='index'>
                             <ul>
-                                <li v-for="songs in new_songs" :key="songs.id" :id="songs.id" @click='$store.dispatch("getMusic", songs.id)'>
+                                <li v-for="songs in new_songs"  :id="songs.id" @click='$store.dispatch("getMusic", songs.id)'>
                                     <div class="songImg">
                                         <img :src="songs.song.album.picUrl" alt="">
                                         <span></span>
@@ -105,13 +105,13 @@
                                 <em class="icon_video"></em>
                             </div>
                             <div class="songsList">
-                                <li v-for='(song,index) in rank_newSong' :key="song.id" :id="song.id">
+                                <li v-for='(song,index) in rank_newSong'  :id="song.id">
                                     <h3>
                                         <i v-text='index+1'></i>
                                         <span v-text="song.name"></span>
                                     </h3>
                                     <p>
-                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' :key='singer.id'>
+                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' >
                                         </small>
                                     </p>
                                 </li>
@@ -133,13 +133,13 @@
                                 <em class="icon_video"></em>
                             </div>
                             <div class="songsList">
-                                <li v-for='(song,index) in rank_hotSong' :key="song.id" :id="song.id" >
+                                <li v-for='(song,index) in rank_hotSong'  :id="song.id" >
                                     <h3>
                                         <i v-text='index+1+"."'></i>
                                         <span v-text="song.name"></span>
                                     </h3>
                                     <p>
-                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' :key='singer.id'>
+                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' >
                                         </small>
                                     </p>
                                 </li>
@@ -159,13 +159,13 @@
                                 <em class="icon_video"></em>
                             </div>
                             <div class="songsList">
-                                <li v-for='(song,index) in rank_UsaSong' :key="song.id" :id="song.id">
+                                <li v-for='(song,index) in rank_UsaSong' :id="song.id">
                                     <h3>
                                         <i v-text='index+1+"."'></i>
                                         <span v-text="song.name"></span>
                                     </h3>
                                     <p>
-                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' :key='singer.id'>
+                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' >
                                         </small>
                                     </p>
                                 </li>
@@ -185,13 +185,13 @@
                                 <em class="icon_video"></em>
                             </div>
                             <div class="songsList">
-                                <li v-for='(song,index) in rank_Korea' :key="song.id" :id="song.id">
+                                <li v-for='(song,index) in rank_Korea'  :id="song.id">
                                     <h3>
                                         <i v-text='index+1+"."'></i>
                                         <span v-text="song.name"></span>
                                     </h3>
                                     <p>
-                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' :key='singer.id'>
+                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' >
                                         </small>
                                     </p>
                                 </li>
@@ -211,13 +211,13 @@
                                 <em class="icon_video"></em>
                             </div>
                             <div class="songsList">
-                                <li v-for='(song,index) in rank_iTunes' :key="song.id" :id="song.id">
+                                <li v-for='(song,index) in rank_iTunes'  :id="song.id">
                                     <h3>
                                         <i v-text='index+1+"."'></i>
                                         <span v-text="song.name"></span>
                                     </h3>
                                     <p>
-                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' :key='singer.id'>
+                                        <small v-for='(singer,index) in song.ar' v-text='song.ar.length>1&&index != song.ar.length-1?singer.name+"/":singer.name' >
                                         </small>
                                     </p>
                                 </li>

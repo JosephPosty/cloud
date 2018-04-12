@@ -22,10 +22,10 @@
             </ul>
             <div class="bgMenu">
               <el-tabs v-model="mineMenu" type="card">
-                <el-tab-pane label="I like" name="first" class="clearfix">
+                <el-tab-pane label="喜欢的音乐" name="first" class="clearfix">
                   <el-tabs v-model="songMenu" type="card" class='songsTab'>
                     <el-tab-pane label='歌曲' name="song">
-                      <span slot="label" style="font-family:fantasy;">歌曲 {{$store.state.user_playList.length>0?$store.state.user_playList[0].trackCount:''}}</span>
+                      <span slot="label" style="font-family:fantasy;">歌曲 {{$store.state.user_likeSongs.length}}</span>
                       <div class="songList">
                         <div class="songsBtn">
                           <el-button type="primary">
@@ -40,12 +40,12 @@
                             <a href="javascript:void(0)">
                               <i class="el-icon-download"></i>下载</a>
                           </el-button>
-                          <el-button type="primary">
+                          <el-button type="primary" @click='aaa()'>
                             <a href="javascript:void(0)">
                               <i class="el-icon-edit"></i>评论</a>
                           </el-button>
                         </div>
-                        <ul>
+                        <ul v-loading='$store.state.loading'>
                           <li>
                             <a href="javascript:void(0)" class="clrarfix">
                               <span>歌曲</span>
@@ -55,7 +55,14 @@
                             </a>
 
                           </li>
-                          <li v-for="(songs,index) in likeSongs" :key='index' :songId='songs.id'>
+                          <!--<template v-if='$store.state.login_loading'>
+
+                          </template>
+                          <template v-if='!$store.state.login_loading'>
+
+                          </template>-->
+
+                          <li v-for="(songs,index) in $store.state.user_likeSongs.length?$store.state.user_likeSongs:likeSongs" :key='index' :songId='songs.id'>
                             <a href="javascript:void(0)" class="clearfix">
                               <span>
                                 <el-tooltip placement="top-start" >
@@ -92,25 +99,26 @@
                               </span>
                               <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
                               <label>
-                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id' >
+                                  <span v-for='(singer,index) in getSinger(songs.artists)' :key='index' >
                                     <el-tooltip placement="top-start" >
                                       <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
                                       <!-- <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a> -->
                                        <div slot="content">{{ singer.name }}</div>
                                     </el-tooltip>
-                                    <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
+                                    <i v-show="index!=getSinger(songs.artists).length-1" >/</i>
                                     </span>
                               </label>
                               <em>
                                 <el-tooltip placement="top-start" >
-                                  <a href="javascript:void(0)"> {{ songs.al.name }}</a>
-                                  <div slot="content"> {{ songs.al.name }}</div>
+                                  <a href="javascript:void(0)"> {{ songs.album.name }}</a>
+                                  <div slot="content"> {{ songs.album.name }}</div>
                                 </el-tooltip>
                               </em>
-                              <i class="song_time">{{ GLOBAL.formatDuring(songs.dt) }}</i>
+                              <i class="song_time">{{ GLOBAL.formatDuring(songs.duration) }}</i>
+                              
                               <div class="_other"></div>
                               <el-tooltip placement="top-start" content="删除">
-                                <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
+                                <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index,songs.id)"></a>
                               </el-tooltip>
                             </a>
                           </li>
@@ -139,18 +147,93 @@
 
                   </el-tabs>
                 </el-tab-pane>
-                <el-tab-pane label="create" name="second">
-<span>shangahi</span>
+                <el-tab-pane label="关注的用户" name="third">
+                  <div class="watchList">
+                    <p>关注 ({{$store.state.userWatch.follow.length}})</p>
+                    <ul class="clearfix">
+                      <li v-for="watcher in $store.state.userWatch.follow" :key='watcher.id'>
+                        <a>
+                          <img :src="watcher.avatarUrl" alt="">
+                        </a>
+                        <div class="info">
+                          <h4>
+                            <a>
+                              <span>{{watcher.nickname}}</span><i :class="[watcher.gender==1?'man':'women']"></i>
+                            </a>
+                          </h4>
+                          <p>
+                            <a>
+                              动态<label>{{watcher.eventCount}}</label>
+                            </a>
+                            <em>|</em>
+                            <a>
+                              关注<label>{{watcher.follows}}</label>
+                            </a>
+                            <em>|</em>
+                            <a>
+                              关注<label>{{watcher.followeds}}</label>
+                            </a>
+                          </p>
+                          <p>
+                            {{watcher.signature}}
+                          </p>
 
+                        </div>
+
+                        <div class="watchStatus">
+                            <i :class="[watcher.mutual?'yes':'no']"></i><span v-text="watcher.mutual?'相互关注':'已关注'"></span>
+                        </div>
+                      </li>
+                    </ul>
+
+                  </div>
                 </el-tab-pane>
-                <el-tab-pane label="Watch" name="third">
+                <el-tab-pane label="粉丝" name="fourth">
+                  <div class="watchList">
+                    <p>关注 ({{$store.state.userWatch.beFollow.length}})</p>
+                    <ul class="clearfix">
+                      <li v-for="watcher in $store.state.userWatch.beFollow" :key='watcher.id'>
+                        <a>
+                          <img :src="watcher.avatarUrl" alt="">
+                        </a>
+                        <div class="info">
+                          <h4>
+                            <a>
+                              <span>{{watcher.nickname}}</span><i :class="[watcher.gender==1?'man':'women']"></i>
+                            </a>
+                          </h4>
+                          <p>
+                            <a>
+                              动态<label>{{watcher.eventCount}}</label>
+                            </a>
+                            <em>|</em>
+                            <a>
+                              关注<label>{{watcher.follows}}</label>
+                            </a>
+                            <em>|</em>
+                            <a>
+                              关注<label>{{watcher.followeds}}</label>
+                            </a>
+                          </p>
+                          <p>
+                            {{watcher.signature}}
+                          </p>
 
-                </el-tab-pane>
-                <el-tab-pane label="Fans" name="fourth">
+                        </div>
 
-                </el-tab-pane>
-                <el-tab-pane label="Video" name="fifth">
+                        <div class="watchStatus">
+                          <template v-if="watcher.mutual"><i  class="yes"></i><span>相互关注</span></template>
+                          <template v-else>
+                            <el-button type="primary">
+                              <em></em>关注
+                            </el-button>
+                          </template>
+                            
+                        </div>
+                      </li>
+                    </ul>
 
+                  </div>
                 </el-tab-pane>
               </el-tabs>
             </div>
@@ -188,7 +271,15 @@ export default {
       allSongs: [],//所有歌单
       likeSongs: [], //我喜欢的音乐列表
       src:'',
+      // loading:true,
+      //login_status: this.$store.state.login_loading,
     };
+  },
+  watch: {
+    login_status(val,oldval) {
+      console.log(val);
+      console.log(oldval);
+    }
   },
   methods: {
     // ...mapMutations([
@@ -198,7 +289,9 @@ export default {
       "getUserwatch",
       "getMusic",
       ]),
-
+      aaa() {
+        this.login_status = '1232132';
+      },
     getUserinfo() {
       if (this.$store.state.isLogin) {
         let userInfo = JSON.parse(window.localStorage.getItem("userInfo"));
@@ -220,23 +313,32 @@ export default {
           that.allSongs = playlist;
           return that.allSongs[0].id;
         })
-        .then(function(id) {
-          that.$http
-            .get(BASE + "/playlist/detail?id=" + id)
-            .then(({ data: { playlist } }) => {
-              that.likeSongs = playlist.tracks;
-            });
-        });
+        // .then(function(id) {
+        //   that.$http
+        //     .get(BASE + "/playlist/detail?id=" + id)
+        //     // .then(({ data: { playlist } }) => {
+        //     //   that.likeSongs = playlist.tracks;
+        //     // });
+        //     .then(data=>{
+        //     that.likeSongs = data.data.result.tracks;
+        //     that.loading = false;
+        //     })
+        // });
     },
-    delete_song(event, index) {
-      this.$confirm("确定要取消收藏该歌曲?", "提示", {
+    delete_song(event, index,id) {
+      this.$confirm("确定要取消喜欢该歌曲?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
         beforeClose: (action, instance, done) => {
           if (action === "confirm") {
             setTimeout(() => {
-              done();
+              this.$http.get(BASE + '/like?id='+ id +'&like=false').then( (result)=> {
+                this.$store.state.user_likeSongs.splice(index,1); 
+                console.log(this.$store.state.user_likeSongs);
+                done()
+              })
+              ;
               setTimeout(() => {
                 instance.confirmButtonLoading = false;
               }, 300);
@@ -249,7 +351,7 @@ export default {
         .then(() => {
           this.$message({
             type: "success",
-            message: "删除成功!"
+            message: `已删除歌曲!`
           });
         })
         .catch(() => {
@@ -272,18 +374,12 @@ export default {
     playAll: function(){  //播放全部
       let that = this;
       that.$store.state.list_id = [];
-      that.likeSongs.map((val,index) => {
+      that.$store.state.user_likeSongs.map((val,index) => {
        that.$store.state.list_id.push(val.id);
     })
-     that.$store.state.CURPLAYLIST = that.likeSongs;
+     that.$store.state.CURPLAYLIST = that.$store.state.user_likeSongs;
      that.$store.dispatch("getMusic", that.$store.state.list_id[0])
     },
-    // playMuiscList: function(index){  //歌单选择播放
-    //   console.log(this.allSongs[index+1]);
-    //   this.$http.get(BASE + '/playlist/detail?id='+ this.allSongs[index+1].id).then((data) => {
-    //     console.log(data.data.playlist.tracks)
-    //   })
-    // }
   },
   components: {
     headerTop,
@@ -305,9 +401,7 @@ export default {
       this.getUserwatch();
       this.getMusicInfo();
     };
-    this.$http.get(BASE + '/playlist/tracks?op=del&pid=2139023459&tracks=347230').then((data)=>{
-      console.log(data)
-    })
+  
   }
 };
 </script>
@@ -344,6 +438,16 @@ export default {
 
 .bgMenu .el-tabs .el-tabs__content .el-tabs__item {
   color: #333;
+}
+.el-loading-mask {
+  max-height: 600px;
+  z-index: 8;
+}
+.watchStatus .el-button {
+  margin-top: -15px;
+  padding: 12px 25px;
+  background-color: #31c27c;
+  border-color: #31c27c;
 }
 </style>
 

@@ -25,23 +25,25 @@
         <button></button>
         <div id="search"  @click.stop v-show='showResult'>
           <div class="result">
-             <div class="result_songs" v-show='SEARCHRESULT.songs'>
+             <div class="result_songs" v-show='SEARCHRESULT.songs'  >
                <h1><i></i><span>单曲</span></h1>
                <ul>
-                 <li v-for="(song,index) in SEARCHRESULT.songs" :key="index" :id='song.id'>
-                   <a >
-                     <span>{{ song.name }}</span>
-                   </a>
+                 <li v-for="(song,index) in SEARCHRESULT.songs" :key="index" :id='song.id'  @click='toRouter()'>
+                  <!--<a @click='toSrc(song.id)'>-->
+                     <router-link :to="{ name: 'songDetails', params: { songId: song.id }}">
+                      <span>{{ song.name }}</span>
+                     </router-link>
+                   <!--</a>-->
                  </li>
                </ul>
              </div>
              <div class="result_singer" v-show='SEARCHRESULT.artists'>
                 <h1><i></i><span>歌手</span></h1>
                 <ul>
-                 <li v-for="(artist,index) in SEARCHRESULT.artists" :key="index" :id='artist.id'>
-                   <a >
+                 <li v-for="(artist,index) in SEARCHRESULT.artists" :key="index" :id='artist.id'  @click='toRouter()'>
+                   <router-link :to="{ name: 'singer', params: { singerId: artist.id }}" :singerid='artist.id'>
                      <span>{{ artist.name }}</span>
-                   </a>
+                   </router-link>
                  </li>
                 </ul>
              </div>
@@ -55,7 +57,7 @@
                  </li>
                </ul>
              </div>
-             <div class="result_mv" v-show='SEARCHRESULT.mvs'>
+             <!--<div class="result_mv" v-show='SEARCHRESULT.mvs'>
                 <h1><i></i><span>MV</span></h1>
                 <ul>
                  <li v-for="(mvs,index) in SEARCHRESULT.mvs" :key="index" :id='mvs.id'>
@@ -64,7 +66,7 @@
                    </a>
                  </li>
                </ul>
-             </div>
+             </div>-->
              <!-- <div class="no_result" v-show='JSON.stringify(SEARCHRESULT) =="{}"'>
                <p>暂无搜索结果</p>
              </div> -->
@@ -80,7 +82,7 @@
            <div class="signed" v-if="loginState"  @click.stop>
              <div class="login_imgInfo">
                <a href="javascript:void(0)" @click="Imghover()">
-                 <img :src="loginUserinfo.backgroundUrl" alt="">
+                 <img :src="loginUserinfo.avatarUrl" alt="">
                  <i></i>
                  <div class="slideInfo" v-show='userImghover'>
                  <ul>
@@ -102,13 +104,12 @@
     <div class="menu">
                 <ul class="clearfix">
                     <li><router-link to='/'>首页</router-link></li>
-                    <li><router-link to='/'>歌手</router-link></li>
-                    <li><router-link to='/'>专辑</router-link></li>
-                    <li><router-link to='/'>排行榜</router-link></li>
-                    <li><router-link to='/'>分类歌单</router-link></li>
-                    <li><router-link to='/'>电台</router-link></li>
-                    <li><router-link to='/'>MV</router-link></li>
-                    <li><router-link to='/'>数字专辑</router-link></li>
+                    <li><router-link to='/artist'>歌手</router-link></li>
+                    <li><router-link to='/rank/0'>排行榜</router-link></li>
+                    <li><router-link to='/type'>分类歌单</router-link></li>
+                    <li><router-link to='/radio'>电台</router-link></li>
+                    <li><router-link to='/mvs'>MV</router-link></li>
+                    <li><router-link to='/numberAblum'>数字专辑</router-link></li>
                 </ul>
             </div>
     <el-dialog title="手机号登录" :visible.sync="$store.state.loginShow" width='400px' >
@@ -195,11 +196,12 @@ export default {
                   JSON.stringify(that.loginUserinfo)
                 );
                 that.$store.state.user = that.loginUserinfo;
-               
+                // that.$store.state.login_loading = true;
+                that.getUserwatch();
                 setTimeout(() => {
-                  that.getUserwatch();
+                  
                    console.log(that.$store.state.user_playList)
-                }, 1000);
+                }, 800);
               }
             })
             .catch(error => {
@@ -218,6 +220,7 @@ export default {
       this.loginState = false;
       this.$store.state.isLogin = false;
       localStorage.clear("userInfo");
+      this.$store.state.login_loading = false;
     },
     getLogininfo() {
       if (JSON.parse(localStorage.getItem("userInfo"))) {
@@ -228,6 +231,10 @@ export default {
     },
     searchFocus() {
       this.showResult = true;
+    },
+    toRouter() {
+      this.showResult = false;
+      this.keyWord = '';
     }
   },
   computed: mapState({
@@ -244,7 +251,10 @@ export default {
      }else {
        this.SEARCHRESULT = {};
      }
-    }
+    },
+    // '$route' (to, from) {
+    //     this.$router.go(0);
+    // }
   },
   created() {
     document.addEventListener("click", e => {

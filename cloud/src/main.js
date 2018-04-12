@@ -14,10 +14,13 @@ Vue.prototype.$http = axios
 Vue.prototype.GLOBAL = _Global
 Vue.use(ElementUI)
 Vue.use(Vuex);
+axios.defaults.withCredentials = true
+// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 Vue.config.productionTip = false
 
-// window.BASE = 'http://xf3ftg.natappfree.cc';
-window.BASE = 'http://127.0.0.1:3000';
+// window.BASE = 'http://ssuja4.natappfree.cc';
+window.BASE = 'http://localhost:3000';
+// window.BASE = 'http://127.0.0.1:3000';
 
 /* eslint-disable no-new */
 new Vue({

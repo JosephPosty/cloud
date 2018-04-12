@@ -12,7 +12,7 @@
                    <p>所属专辑: <span v-if='songInfo.al'><a>{{songInfo.al.name}}</a></span></p>
                    <div class="listBtn">
                         <el-button type="primary">
-                            <a href="javascript:void(0)" @click="playAll()">
+                            <a href="javascript:void(0)" @click='$store.dispatch("getMusic", songInfo.id)'>
                               <i class="el-icon-caret-right"></i>播放</a>
                           </el-button>
                           <el-button type="primary">
@@ -25,7 +25,7 @@
                           </el-button>
                           <el-button type="primary">
                             <a href="javascript:void(0)">
-                              <i class="el-icon-edit"></i>评论({{total}})</a>
+                              <i class="el-icon-edit"></i>评论({{$store.state.commentTotal}})</a>
                           </el-button>
                 </div>
                 <div class="lyric" ref='lyric' id='lyric'>
@@ -38,88 +38,35 @@
                </div>
            </header>
             <!-- 评论区 -->
-            <div class="pl">
-               <div class="plBox">
-                    <h1><span>评论</span><em>共{{total}}条评论</em></h1>
-                    <div class="mine">
-                        <img :src="$store.state.user.backgroundUrl" alt="">
-                        <textarea name="pl" id="minePl" cols="30" rows="10" v-model='mine_pl' style="resize:none;"></textarea>
-                        <div class="mineBtn">
-                            <span>{{140-mine_pl.length}}</span>
-                            <a>评论</a>
-                        </div>
-                    </div>
-                    <!-- <div class="emotion">
-                        <a v-for='(src,index) in emotions' :key='index' :title='src.title'>
-                            <img :src="src.url" alt="" >
-                        </a>
-                    </div> -->
-                    <!-- 精选评论 -->
-                    <div class="other">
-                        <h2>精彩评论</h2>
-                        <ul class="clearfix">
-                            <li v-for='(pl,index) in comment' :key="index">
-                                <div class="otherImg">
-                                    <img :src="pl.user.avatarUrl" alt="">
-                                </div>
-                                <div class="plCont">
-                                    <p>
-                                        <a>{{pl.user.nickname}}</a>
-                                        <span>: {{pl.content}}</span>
-                                        <p v-if='pl.beReplied.length'>
-                                                <div v-for="re in pl.beReplied" :key='re' class='hf'>
-                                                    <span>{{re.user.nickname}}</span> : {{re.content}}
-                                                </div>
-                                        </p>
-                                    </p>
-                                    <div class="plBottom">
-                                        <small>{{GLOBAL.getDate(pl.time)}}</small>
-                                        <div class="rp">
-                                            <i @click='give()'></i>
-                                            <span>回复</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-               </div>
-                
-            </div>
+            <comment></comment>
        </div>
   </div>
 </template>
 <script>
 import store from "../../../store/store";
 import headerTop from "../../../components/headerTop";
+import comment from "../../../components/comment";
 //Vue.component('vue-sina-emotion', VueSinaEmotion);
 export default {
   data() {
     return {
       songId: "", //当前歌曲id
       songInfo: {}, //当前歌曲信息
-      comment: [], //评论信息
+      // comment: [], //评论信息
       cur_page: 1, //当前评论页数（分页）
-      total: "", //评论数量
+      // total: "", //评论数量
       lyric_eng: [], //歌词(英语)
       lyric_cn: [], //歌词(中文)
       showMoreText: "展开",
       showMore: false,
-      mine_pl: "", //我的评论
-      emotions: [
-        {
-          title: "大笑",
-          url: "http://s1.music.126.net/style/web2/emt/emoji_86.png"
-        },
-        {
-          title: "可爱",
-          url: "http://s1.music.126.net/style/web2/emt/emoji_85.png"
-        }
-      ]
     };
   },
   methods: {
     GETSONGINFO: function(songid) {
+      this.$store.state.commentId = this.songId;
+      this.$store.state.commentType = 0;
+      this.$store.state.cur_page = 1;
+      this.$store.dispatch("getComment");
       this.$http
         .get(BASE + "/song/detail?ids=" + songid)
         .then(({ data: { songs, privileges } }) => {
@@ -128,49 +75,54 @@ export default {
         })
         .then(() => {
           this.$http.get(BASE + "/lyric?id=" + songid).then(data => {
-            if (data.data.nolyric) return;
-            var arr = data.data.lrc.lyric.split("\n");
-            arr.map(value => {
-              //this.lyric_eng.push(value.split(']')[1]);
-              //    if(value.split(']')[1]){
-              this.lyric_eng.push({
-                eng: value.split("]")[1] ? value.split("]")[1] : ""
+            if (data.data.nolyric || data.data.qfy) return;
+              var arr = data.data.lrc.lyric.split("\n");
+              this.lyric_eng = [];
+              document.getElementById("lyric").style.overflow = "auto";
+              document.getElementById("lyric").style.height = 'auto';
+              arr.map(value => {
+                //this.lyric_eng.push(value.split(']')[1]);
+                //    if(value.split(']')[1]){
+                this.lyric_eng.push({
+                  eng: value.split("]")[1] ? value.split("]")[1] : ""
+                });
+                //    }
               });
-              //    }
-            });
-            if (data.data.tlyric) {
+              if (data.data.tlyric.lyric) {
               var arr_cn = data.data.tlyric.lyric.split("\n");
               arr_cn.map((value, index) => {
                 //this.lyric_cn.push(value.split(']')[1]);
                 if (this.lyric_eng[index] && this.lyric_eng[index].eng)
                   this.lyric_eng[index].cn = value.split("]")[1];
               });
-              this.$nextTick(() => {
+            }
+             this.$nextTick(() => {
                 if (this.$refs.lyric.offsetHeight > 300) {
                   document.getElementById("lyric").style.overflow = "hidden";
                   document.getElementById("lyric").style.height = 230 + "px";
                   this.showMoreText = "展开";
                   this.showMore = true;
                 } else {
+                 
                   this.showMore = false;
                 }
-              });
-            } else {
-              this.showMore = false;
-            }
+              }); 
+            
+            
+            
           });
         })
-        .then(() => {
-          this.$http
-            .get(
-              BASE + "/comment/music?id=" + songid + "&offset=" + this.cur_page
-            )
-            .then(({ data: { comments, total } }) => {
-              this.total = total;
-              this.comment = comments;
-              console.log(comments);
-            });
-        });
+        // .then(() => {
+        //   this.$http
+        //     .get(
+        //       BASE + "/comment/music?id=" + songid + "&offset=" + this.cur_page
+        //     )
+        //     .then(({ data: { comments, total } }) => {
+        //       this.total = total;
+        //       this.comment = comments;
+        //       console.log(comments);
+        //     });
+        // });
     },
     getSinger: function(singer) {
       if (singer) {
@@ -195,16 +147,28 @@ export default {
     },
     give: function() {
 
+    },
+    
+  },
+   watch: {
+    '$route' (to, from) {
+      if(to.name == 'songDetails') {
+        this.songId = this.$route.params.songId;
+        this.GETSONGINFO(this.songId);
+      }
+       
     }
   },
   components: {
-    headerTop
+    headerTop,
+    comment
   },
   created() {
     this.songId = this.$route.params.songId;
   },
   mounted() {
     this.GETSONGINFO(this.songId);
+    
   }
 };
 </script>
@@ -300,132 +264,6 @@ header {
     }
   }
 }
-.plBox {
-  margin: 20px auto;
-  padding: 0 20px;
-  position: relative;
-  h1 {
-    border-bottom: 2px solid #c20c0c;
-    line-height: 28px;
-    span {
-      font-size: 20px;
-    }
-    em {
-      color: #666;
-      display: inline-block;
-      margin-left: 15px;
-      font-size: 12px;
-    }
-  }
-  .mine {
-    margin-left: 60px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-    img {
-      width: 50px;
-      height: 50px;
-      position: absolute;
-      left: 20px;
-    }
-    #minePl {
-      height: 50px;
-      width: 100%;
-      padding: 5px 6px 6px;
-      box-sizing: border-box;
-    }
-    .mineBtn {
-      text-align: right;
-      margin-top: 10px;
-      a {
-        display: inline-block;
-        padding: 3px 15px;
-        background: #31c27c;
-        color: #fff;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      span {
-        color: #999;
-        padding-right: 10px;
-      }
-    }
-  }
-  .other {
-      h2 {
-          border-bottom: 1px solid #ccc;
-          padding-bottom: 10px;
-          font-size: 14px;
-      }
-    li {
-      display: flex;
-      width: 100%;
-      border-bottom: 1px dotted #ccc;
-      padding: 15px 0;
-     min-height: 50px;
-      position: relative;
-      .hf {
-          background: #f4f4f4;
-          padding: 8px 19px;
-          border: 1px solid #dedede;
-          word-break: break-word;
-          line-height: 20px;
-          font-size: 12px;
-          span {
-              color: #0c73c2!important;
-          }
-      }
-      .otherImg {
-          position: absolute;
-        img {
-          width: 50px;
-          height: 50px;
-        }
-      }
-      .plCont {
-          padding-left: 70px;
-          width: 100%;
-        a {
-          cursor: pointer;
-          color: #0c73c2;
-          font-size: 12px;
-        }
-        span {
-            font-size: 12px;
-            color: #333;
-            line-height: 20px;
-        }
-        .plBottom {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            small {
-                color: #999;
-                font-size: 12px;
-            }
-            .rp {
-                line-height: 20px;
-                i {
-                    display: inline-block;
-                    width: 15px;
-                    height: 14px;
-                    background: url('../../../assets/images/icon2.png') no-repeat;
-                    background-position: -150px -20px; 
-                    cursor: pointer;
-                    vertical-align: middle;
-                    margin-right: 5px;
-                    
-                }
-                span {
-                    border-left: 1px solid #999;
-                    padding-left: 10px;
-                    vertical-align: bottom;
-                }
-            }
-        }
-      }
-    }
-  }
-}
+
 </style>
 

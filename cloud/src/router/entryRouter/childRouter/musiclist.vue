@@ -67,13 +67,15 @@
                           <li v-for="(songs,index) in listInfo.tracks" :key='index' :songId='songs.id'>
                             <a href="javascript:void(0)" class="clearfix">
                               <span>
-                                  <small><a href="javascript:void(0)">{{songs.name}}</a></small>
+                                  <small><router-link :to="{ name: 'songDetails', params: { songId: songs.id }}" >
+                                                {{ songs.name }}
+                                            </router-link></small>
                                 <!-- <small></small> -->
                                 <div class="hideMenu" >
                                       <a href="javascript:void(0)" :songId='songs.id' @click='$store.dispatch("getMusic", songs.id)'>
                                         <i class="_icon_play"></i>
                                       </a>
-                                      <a href="javascript:void(0)" >
+                                      <a href="javascript:void(0)" @click="add()" >
                                          <i class="_icon_add"></i>
                                       </a>
                                       <a href="javascript:void(0)">
@@ -86,21 +88,21 @@
                               </span>
                               <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
                               <label>
-                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='singer.id' >
+                                  <span v-for='(singer,index) in getSinger(songs.artists)' :key='Math.random()'>
                                     
                                       <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
                                       <!-- <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a> -->
                                       
                                    
-                                    <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
+                                    <i v-show="index!=getSinger(songs.artists).length-1" >/</i>
                                     </span>
                               </label>
                               <em>
-                                  <a href="javascript:void(0)"> {{ songs.al.name }}</a>
+                                  <a href="javascript:void(0)"> {{ songs.album.name }}</a>
                                  
                                 
                               </em>
-                              <i class="song_time">{{ GLOBAL.formatDuring(songs.dt) }}</i>
+                              <i class="song_time">{{ GLOBAL.formatDuring(songs.duration) }}</i>
                               <div class="_other"></div>
                                 <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
                               
@@ -130,7 +132,7 @@ export default {
       let that = this;
       
       that.$http.get(BASE + "/playlist/detail?id=" + id).then(data => {
-        that.listInfo = data.data.playlist;
+        that.listInfo = data.data.result;
         console.log(that.listInfo.tracks);
       });
       that.$http.get(BASE + '/user/playlist?uid=' + that.$store.state.user.userId).then(({ data: { playlist } }) => {
@@ -156,10 +158,24 @@ export default {
     })
      that.$store.state.CURPLAYLIST = that.listInfo.tracks;
      that.$store.dispatch("getMusic", that.$store.state.list_id[0])
+    },
+    add: function(){
+      this.$http.get(BASE + '/like?id=534128317').then(function(data){
+        console.log(data)
+      })
     }
   },
   components: {
     headerTop
+  },
+  watch: {
+    '$route' (to, from) {
+      if(to.name == 'musiclist') {
+       this.listId = this.$route.params.listId;
+        this.getListinfo(this.listId);
+      }
+       
+    }
   },
   created() {
     this.listId = this.$route.params.listId;
@@ -168,7 +184,7 @@ export default {
   mounted() {
     this.getListinfo(this.listId);
      this.$nextTick(()=> {
-        document.getElementById('ul_list').style.height = window.innerHeight-300+'px';
+        document.getElementById('ul_list').style.height = window.innerHeight+'px';
      })
            
   }

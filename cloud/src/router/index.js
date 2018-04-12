@@ -5,7 +5,9 @@ import main from './entryRouter/main'
 import singer from './entryRouter/childRouter/singer'
 import musiclist from './entryRouter/childRouter/musiclist'
 import song from './entryRouter/childRouter/songDetails'
+import rank from './entryRouter/childRouter/rank'
 import mine from './entryRouter/mine'
+import artist from './entryRouter/childRouter/artist'
 Vue.use(Router)
 
 export default new Router({
@@ -36,7 +38,16 @@ export default new Router({
             name: 'mine',
             component: mine,
         },
-
+        {
+            path: '/artist',
+            name: 'artirst',
+            component: artist,
+        },
+        {
+            path: '/rank/:rankId',
+            name: 'rank',
+            component: rank,
+        },
         // {
         //   path: '/',
         //   name: 'headerTop',
