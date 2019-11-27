@@ -88,21 +88,21 @@
                               </span>
                               <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
                               <label>
-                                  <span v-for='(singer,index) in getSinger(songs.artists)' :key='Math.random()'>
+                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='Math.random()'>
                                     
                                       <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
                                       <!-- <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a> -->
                                       
                                    
-                                    <i v-show="index!=getSinger(songs.artists).length-1" >/</i>
+                                    <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
                                     </span>
                               </label>
                               <em>
-                                  <a href="javascript:void(0)"> {{ songs.album.name }}</a>
+                                  <a href="javascript:void(0)"> {{ songs.al.name }}</a>
                                  
                                 
                               </em>
-                              <i class="song_time">{{ GLOBAL.formatDuring(songs.duration) }}</i>
+                              <i class="song_time">{{ GLOBAL.formatDuring(songs.dt) }}</i>
                               <div class="_other"></div>
                                 <a href="javascript:void(0)" class="_icon_delete" @click="delete_song($event,index)"></a>
                               
@@ -132,7 +132,7 @@ export default {
       let that = this;
       
       that.$http.get(BASE + "/playlist/detail?id=" + id).then(data => {
-        that.listInfo = data.data.result;
+        that.listInfo = data.data.playlist;
         console.log(that.listInfo.tracks);
       });
       that.$http.get(BASE + '/user/playlist?uid=' + that.$store.state.user.userId).then(({ data: { playlist } }) => {

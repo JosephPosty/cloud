@@ -99,22 +99,22 @@
                               </span>
                               <!-- <label>{{ songs.ar | getSinger(songs.ar) }}</label> -->
                               <label>
-                                  <span v-for='(singer,index) in getSinger(songs.artists)' :key='index' >
+                                  <span v-for='(singer,index) in getSinger(songs.ar)' :key='index' >
                                     <el-tooltip placement="top-start" >
                                       <router-link :to="{ name: 'singer', params: { singerId: singer.id }}" :singerid='singer.id'>{{ singer.name }}</router-link>
                                       <!-- <a href="javascript:void(0)" :singerid='singer.id'>{{ singer.name }}</a> -->
                                        <div slot="content">{{ singer.name }}</div>
                                     </el-tooltip>
-                                    <i v-show="index!=getSinger(songs.artists).length-1" >/</i>
+                                    <i v-show="index!=getSinger(songs.ar).length-1" >/</i>
                                     </span>
                               </label>
                               <em>
                                 <el-tooltip placement="top-start" >
-                                  <a href="javascript:void(0)"> {{ songs.album.name }}</a>
-                                  <div slot="content"> {{ songs.album.name }}</div>
+                                  <a href="javascript:void(0)"> {{ songs.al.name }}</a>
+                                  <div slot="content"> {{ songs.al.name }}</div>
                                 </el-tooltip>
                               </em>
-                              <i class="song_time">{{ GLOBAL.formatDuring(songs.duration) }}</i>
+                              <i class="song_time">{{ GLOBAL.formatDuring(songs.dt) }}</i>
                               
                               <div class="_other"></div>
                               <el-tooltip placement="top-start" content="删除">
@@ -369,6 +369,7 @@ export default {
           name:val.name
         });
       });
+      console.log(result)
       return result;
     },
     playAll: function(){  //播放全部
@@ -385,7 +386,9 @@ export default {
     headerTop,
     playBar
   },
-  created() {},
+  created() {
+    console.log(this.$store.state.user_likeSongs)
+  },
   filters: {
   },
   computed: {

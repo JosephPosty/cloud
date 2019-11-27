@@ -139,7 +139,7 @@ export default {
     return {
       form: {
         phoneNum: "18850343832",
-        password: "qq1403009724"
+        password: "joseph.1993"
       },
       loginRule: {
         phoneNum: [

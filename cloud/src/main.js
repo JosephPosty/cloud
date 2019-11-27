@@ -19,7 +19,7 @@ axios.defaults.withCredentials = true
 Vue.config.productionTip = false
 
 // window.BASE = 'http://ssuja4.natappfree.cc';
-window.BASE = 'http://localhost:3000';
+window.BASE = 'http://192.168.9.23:3000';
 // window.BASE = 'http://127.0.0.1:3000';
 
 /* eslint-disable no-new */

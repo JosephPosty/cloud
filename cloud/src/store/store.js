@@ -44,7 +44,7 @@ export default new Vuex.Store({
             .then(()=>{
                 if(!state.login_loading){
                     axios.get(BASE + '/playlist/detail?id=' + state.user_playList[0].id).then((song)=>{
-                    state.user_likeSongs = song.data.result.tracks;
+                    state.user_likeSongs = song.data.playlist.tracks;
                     state.loading = false;
                     console.log(state.user_likeSongs);
                     console.log(Vue.$route)
@@ -96,7 +96,7 @@ export default new Vuex.Store({
             })
 
             .then(() => {
-                axios.get(BASE + '/music/url?id=' + m_id).then((data) => {
+                axios.get(BASE + '/song/url?id=' + m_id).then((data) => {
                     if (data.data.code == 200) {
                         state.MUSICID = m_id;
                         state.MUSICURL = data.data.data[0].url;
